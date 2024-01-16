@@ -21,16 +21,15 @@
   }
 }
 
-// Use the standard ArrayBuffer typemaps
-%typemap(in)        (uint8_t *data, size_t len) = (void *arraybuffer_data, size_t arraybuffer_len);
-%typemap(typecheck) (uint8_t *data, size_t len) = (void *arraybuffer_data, size_t arraybuffer_len);
-%typemap(argout)    (uint8_t *data, size_t len) = (void *arraybuffer_data, size_t arraybuffer_len);
+// Use the standard ArrayBuffer typemaps:
+// * writable Buffer in an argument
+%apply(void *arraybuffer_data, size_t arraybuffer_len)    {(uint8_t *data, size_t len)};
 
-%typemap(in)        (uint8_t **data, size_t *len) = (void **arraybuffer_data, size_t *arraybuffer_len);
-%typemap(argout)    (uint8_t **data, size_t *len) = (void **arraybuffer_data, size_t *arraybuffer_len);
+// * this one produces a returned value from the arguments
+%apply(void **arraybuffer_data, size_t *arraybuffer_len)  {(uint8_t **data, size_t *len)};
 
 // For Fill
-%typemap(in)        uint8_t = int;
+%apply(int)                                               { uint8_t };
 
 // Create an async version of Write
 %feature("async:locking", "1");
