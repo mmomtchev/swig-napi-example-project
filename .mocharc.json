@@ -1,0 +1,7 @@
+{
+  "spec": "test/*.test.*s",
+  "node-option": [
+    "no-warnings",
+    "loader=ts-node/esm"
+  ]
+}

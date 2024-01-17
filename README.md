@@ -6,6 +6,8 @@ If you want to see a real-world complex project that uses `conan` to manage its 
 
 # Try it for yourself
 
+**While the compiled native and WASM modules should work on all OS supported by `node-gyp`, generating the SWIG wrappers and building the WASM is supported only on Linux**
+
 After installing **SWIG JavaScript Evolution** which must be available in your path:
 
 ```shell
@@ -32,4 +34,7 @@ Run the unit tests:
 npm test
 ```
 
-**At the moment only Linux is supported**
+# CJS, MJS, ES6, TypeScript...
+
+You should be aware that publishing an `npm` module that works in every possible environment - including the browser, Node.js, being `import`ed, being `require`d, being transpiled from TypeScript, being bundled by `webpack`, etc... - is a daunting task that requires very good understanding of the various module loaders. Every effort has been made for this package to be as universal as possible - including a trick with a dummy `package.json` in the `build` directory - so that it can serve as a good starting point for your own package. Also do not forget to check [`magickwand.js`](https://github.com/mmomtchev/magickwand.js) for a real-world package that works both in Node.js and in the browser.
+

@@ -2,9 +2,24 @@
   "name": "swig-napi-example-project",
   "version": "1.0.0",
   "description": "Example template for using SWIG Node-API for a dual-build Node.js/native + Browser/WASM project",
+  "type": "module",
+  "main": "./lib/native.cjs",
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.cts",
+      "require": "./lib/native.cjs"
+    },
+    "./wasm": {
+      "types": "./wasm/index.d.mts",
+      "import": "./wasm/index.mjs"
+    }
+  },
   "scripts": {
     "swig": "swig -javascript -napi -typescript -c++ -outdir build -o build/blob_wrap.cc src/blob.i",
-    "test": "npx mocha"
+    "test": "npx mocha",
+    "build:wasm": "CC=emcc CXX=em++ npx node-gyp configure build --target_platform=emscripten",
+    "build:native": "npx node-gyp configure build",
+    "build": "npm run build:native && npm run build:wasm"
   },
   "repository": {
     "type": "git",
@@ -29,7 +44,12 @@
     "node-gyp": "^10.0.1"
   },
   "devDependencies": {
+    "@types/chai": "^4.3.11",
+    "@types/mocha": "^10.0.6",
+    "@types/node": "^20.11.5",
     "chai": "^5.0.0",
-    "mocha": "^10.2.0"
+    "mocha": "^10.2.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
   }
 }

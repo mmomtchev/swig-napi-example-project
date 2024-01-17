@@ -6,7 +6,7 @@
     'target_arch%': 'wasm32',
     'target_platform%': 'emscripten',
     'wasm_threads%': 0,
-    'product_extension%': 'js',
+    'product_extension%': 'mjs',
     'emscripten_pthread': [
       # Emscripten + emnapi libuv multithreading
       '-pthread',
@@ -31,6 +31,7 @@
       '-sNO_DISABLE_EXCEPTION_CATCHING',
       '--bind',
       '-sMODULARIZE',
+      '-sEXPORT_ES6=1',
       '-sEXPORT_NAME=blob',
       # Pay attention to this value, if you overflow it, you will get
       # all kinds of weird errors
