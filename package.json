@@ -15,7 +15,7 @@
     }
   },
   "scripts": {
-    "swig": "swig -javascript -napi -typescript -c++ -outdir build -o build/blob_wrap.cc src/blob.i",
+    "swig": "swig-jse -javascript -napi -typescript -c++ -outdir build -exports '../build/Release/blob.node' -o build/blob_wrap.cc src/blob.i",
     "test": "npx mocha",
     "build:wasm": "CC=emcc CXX=em++ npx node-gyp configure build --target_platform=emscripten",
     "build:native": "npx node-gyp configure build",
