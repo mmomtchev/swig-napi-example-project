@@ -16,7 +16,9 @@
   },
   "scripts": {
     "swig": "swig-jse -javascript -napi -typescript -c++ -outdir build -exports '../build/Release/blob.node' -o build/blob_wrap.cc src/blob.i",
-    "test": "npx mocha",
+    "test": "npm run test:nodejs && npm run test:browser",
+    "test:nodejs": "npx mocha",
+    "test:browser": "cd test/browser && npx webpack --mode=production && npx karma start ./karma.conf.cjs",
     "build:wasm": "CC=emcc CXX=em++ npx node-gyp configure build --target_platform=emscripten",
     "build:native": "npx node-gyp configure build",
     "build": "npm run build:native && npm run build:wasm"
@@ -48,8 +50,15 @@
     "@types/mocha": "^10.0.6",
     "@types/node": "^20.11.5",
     "chai": "^5.0.0",
+    "karma": "^6.4.2",
+    "karma-chrome-launcher": "^3.2.0",
+    "karma-mocha": "^2.0.1",
+    "karma-verbose-reporter": "^0.0.8",
     "mocha": "^10.2.0",
     "ts-node": "^10.9.2",
-    "typescript": "^5.3.3"
+    "typescript": "^5.3.3",
+    "webpack": "^5.89.0",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^4.15.1"
   }
 }

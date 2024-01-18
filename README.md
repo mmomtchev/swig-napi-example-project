@@ -31,7 +31,14 @@ CC=emcc CXX=em++ npx node-gyp build
 
 Run the unit tests:
 ```
+# Run everything
 npm test
+
+# Run only Node.js
+npm run test:nodejs
+
+# Run only the browser
+npm run test:browser
 ```
 
 # CJS, MJS, ES6, TypeScript...
