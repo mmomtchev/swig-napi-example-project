@@ -21,7 +21,8 @@
     "test:browser": "cd test/browser && npx webpack --mode=production && npx karma start ./karma.conf.cjs",
     "build:wasm": "CC=emcc CXX=em++ npx node-gyp configure build --target_platform=emscripten",
     "build:native": "npx node-gyp configure build",
-    "build": "npm run build:native && npm run build:wasm"
+    "build": "npm run build:native && npm run build:wasm",
+    "dev": "cd test/browser && npx webpack serve --mode=production"
   },
   "repository": {
     "type": "git",

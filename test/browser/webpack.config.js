@@ -63,6 +63,9 @@ export default [
       static: {
         directory: path.dirname(fileURLToPath(import.meta.url))
       },
+      devMiddleware: {
+        'publicPath': '/build'
+      },
       headers: {
         'Cross-Origin-Opener-Policy': 'same-origin',
         'Cross-Origin-Embedder-Policy': 'require-corp'
