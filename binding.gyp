@@ -40,13 +40,14 @@
   'targets': [
     {
       # The main binary target - both native or WASM
-      'target_name': 'blob',
+      'target_name': 'example',
       'include_dirs': [
         '<(module_root_dir)/src'
       ],
       'sources': [
         'src/blob.cc',
-        'build/blob_wrap.cc'
+        'src/array.cc',
+        'build/example_wrap.cc'
       ]
     }
   ]

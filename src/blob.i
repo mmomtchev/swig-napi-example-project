@@ -1,25 +1,9 @@
-%module blob
-
-#ifndef SWIG_JAVASCRIPT_EVOLUTION
-#error blob requires SWIG JavaScript Evolution
-#endif
-
 %{
+  // This goes into the wrapper code
   #include <blob.h>
 %}
 
 %include <arraybuffer.i>
-%include <exception.i>
-
-// Rethrow all C++ exceptions as JS exceptions
-%exception {
-  try {
-    $action
-  } catch (const std::exception &e) {
-    SWIG_Raise(e.what());
-    SWIG_fail;
-  }
-}
 
 // Use the standard ArrayBuffer typemaps:
 // * writable Buffer in an argument
@@ -38,4 +22,5 @@
 // Create an async version of Write
 %feature("async", "Async") Blob::Write;
 
+// Bring in all the function definitions
 %include <blob.h>

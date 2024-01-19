@@ -1,1 +1,1 @@
-export * from '../build/blob';
+export * from '../build/example';
