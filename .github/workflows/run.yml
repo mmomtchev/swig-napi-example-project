@@ -10,6 +10,10 @@ jobs:
       with:
         branch: jse
     - uses: mymindstorm/setup-emsdk@v13
+    - uses: actions/checkout@v3
+    - uses: actions/setup-node@v3
+      with:
+        node-version: 20
 
     - name: Verify SWIG
       run: swig-jse -version
