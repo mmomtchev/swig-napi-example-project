@@ -28,6 +28,9 @@ export default [
      * to not expand those statements - we know that these sections won't be executed in
      * the browser since they are dependant on the environment auto-detection.
      * 
+     * The list is current for emscripten 3.1.51. Later versions may additional
+     * symbols.
+     * 
      * Alternatively, if you want to publish a WASM that works without any custom
      * webpack configuration, you can take a look at magickwand.js - magickwand.js
      * explicitly disables the Node.js environment from its WASM binary.
@@ -41,6 +44,7 @@ export default [
       'fs': 'fs',
       'worker_threads': 'worker_threads',
       'module': 'module',
+      'vm': 'vm',
       './': '"./"'
     },
     ignoreWarnings: [
@@ -112,6 +116,7 @@ export default [
       'fs': 'fs',
       'worker_threads': 'worker_threads',
       'module': 'module',
+      'vm': 'vm',
       './': '"./"'
     }
   }
