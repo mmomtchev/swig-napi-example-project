@@ -20,6 +20,9 @@ jobs:
     - name: Verify emscripten
       run: emcc -v
 
+    - name: Install dependencies
+      run: npm install
+
     - name: Run SWIG
       run: npm run swig
 
