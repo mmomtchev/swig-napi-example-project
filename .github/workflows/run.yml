@@ -6,14 +6,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: mmomtchev/setup-swig@main
-      with:
-        branch: jse
     - uses: mymindstorm/setup-emsdk@v13
     - uses: actions/checkout@v3
     - uses: actions/setup-node@v3
       with:
         node-version: 20
+    - uses: mmomtchev/setup-swig@main
+      with:
+        branch: jse
 
     - name: Verify SWIG
       run: swig-jse -version
