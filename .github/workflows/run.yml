@@ -20,11 +20,11 @@ jobs:
     - name: Verify emscripten
       run: emcc -v
 
-    - name: Install dependencies
-      run: npm install
-
     - name: Run SWIG
       run: npm run swig
+
+    - name: Install dependencies
+      run: npm install --ignore-scripts
 
     - name: Build the native version
       run: npx node-gyp configure build
