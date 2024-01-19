@@ -10,7 +10,7 @@ jobs:
     - uses: actions/setup-node@v3
       with:
         node-version: 20
-    - uses: mmomtchev/setup-swig@main
+    - uses: mmomtchev/setup-swig@v1
       with:
         branch: jse
     - uses: mymindstorm/setup-emsdk@v13
