@@ -2,11 +2,10 @@ name: 'Test'
 on: [pull_request, push]
 
 jobs:
-  defaults:
+  test:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: mymindstorm/setup-emsdk@v13
     - uses: actions/checkout@v3
     - uses: actions/setup-node@v3
       with:
@@ -14,7 +13,10 @@ jobs:
     - uses: mmomtchev/setup-swig@main
       with:
         branch: jse
-
+    - uses: mymindstorm/setup-emsdk@v13
+      with:
+        version: 3.1.51
+        
     - name: Verify SWIG
       run: swig-jse -version
     - name: Verify emscripten
