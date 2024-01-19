@@ -3,7 +3,7 @@ on: [pull_request, push]
 
 jobs:
   defaults:
-    runs-on: unbutu-latest
+    runs-on: ubuntu-latest
 
     steps:
     - uses: mmomtchev/setup-swig@main
