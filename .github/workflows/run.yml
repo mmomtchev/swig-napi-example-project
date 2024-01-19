@@ -1,0 +1,41 @@
+name: 'Test'
+on: [pull_request, push]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-node@v3
+      with:
+        node-version: 20
+    - uses: mmomtchev/setup-swig@v1
+      with:
+        branch: jse
+    - uses: mymindstorm/setup-emsdk@v13
+      with:
+        version: 3.1.51
+        
+    - name: Verify SWIG
+      run: swig-jse -version
+    - name: Verify emscripten
+      run: emcc -v
+
+    - name: Run SWIG
+      run: npm run swig
+
+    - name: Install dependencies
+      run: npm install --ignore-scripts
+
+    - name: Build the native version
+      run: npx node-gyp configure build
+    - name: Build the WASM version
+      run: CC=emcc CXX=em++ npx node-gyp configure build --target_platform=emscripten
+    
+    - name: Run the Node.js tests
+      run: npm run test:nodejs
+    - name: Run the browser tests
+      uses: GabrielBB/xvfb-action@v1
+      with:
+        run: npm run test:browser
