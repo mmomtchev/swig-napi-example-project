@@ -1,4 +1,4 @@
-import { Blob } from '../lib/native.cjs';
+import { Blob, IntObject, ReadOnlyVector, ReturnVector1, ReturnVector2, PutMap, GetMap } from '../lib/native.cjs';
 import { assert } from 'chai';
 
 describe('native', () => {
@@ -45,6 +45,37 @@ describe('native', () => {
       }, /Sizes must match/);
     });
 
+    it('pass a ReadOnlyVector', () => {
+      const obj1 = new IntObject(1);
+      const obj2 = new IntObject(2);
+      const obj3 = new IntObject(3);
+      const r = ReadOnlyVector([obj1, obj2, obj3]);
+      assert.strictEqual(r, 1);
+    });
+
+    it('retrieve a ReturnVector 1', () => {
+      const r = ReturnVector1();
+      assert.isArray(r);
+      assert.lengthOf(r, 3);
+      assert.strictEqual(r[0].get(), 1);
+    });
+
+    it('retrieve a ReturnVector 2', () => {
+      const r = ReturnVector2();
+      assert.isArray(r);
+      assert.lengthOf(r, 3);
+      assert.strictEqual(r[0].get(), 1);
+    });
+
+    it('pass an object as a map', () => {
+      PutMap({expected: 'value'});
+    });
+
+    it('retrieve a map as an object', () => {
+      const r = GetMap();
+      assert.isObject(r);
+      assert.propertyVal(r, 'returned', 'value');
+    });
   });
 
 });
