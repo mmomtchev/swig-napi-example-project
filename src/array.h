@@ -5,6 +5,8 @@ class IntObject {
   int value_;
 
 public:
+  // The STL conversion typemaps require that the objects
+  // are default-constructible and copyable
   IntObject() = default;
   IntObject(const IntObject &) = default;
   IntObject(int value);
