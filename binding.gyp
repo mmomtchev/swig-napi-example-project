@@ -47,6 +47,7 @@
       'sources': [
         'src/blob.cc',
         'src/array.cc',
+        'src/map.cc',
         'build/example_wrap.cc'
       ]
     }

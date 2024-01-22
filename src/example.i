@@ -21,3 +21,6 @@
 
 // Examples for handling arrays (std::vector to Array)
 %include <array.i>
+
+// Examples for handling objects (std::map to object)
+%include <map.i>

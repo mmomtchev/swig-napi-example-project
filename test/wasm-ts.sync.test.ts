@@ -74,6 +74,16 @@ describe('WASM', () => {
       assert.lengthOf(r, 3);
       assert.strictEqual(r[0].get(), 1);
     });
+
+    it('pass an object as a map', () => {
+      bindings.PutMap({ expected: 'value' });
+    });
+
+    it('retrieve a map as an object', () => {
+      const r = bindings.GetMap();
+      assert.isObject(r);
+      assert.propertyVal(r, 'returned', 'value');
+    });
   });
 
 });
