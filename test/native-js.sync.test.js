@@ -1,4 +1,4 @@
-import { Blob, IntObject, ReadOnlyVector, ReturnVector } from '../lib/native.cjs';
+import { Blob, IntObject, ReadOnlyVector, ReturnVector1, ReturnVector2 } from '../lib/native.cjs';
 import { assert } from 'chai';
 
 describe('native', () => {
@@ -53,8 +53,15 @@ describe('native', () => {
       assert.strictEqual(r, 1);
     });
 
-    it('retrieve a ReturnVector', () => {
-      const r = ReturnVector();
+    it('retrieve a ReturnVector 1', () => {
+      const r = ReturnVector1();
+      assert.isArray(r);
+      assert.lengthOf(r, 3);
+      assert.strictEqual(r[0].get(), 1);
+    });
+
+    it('retrieve a ReturnVector 2', () => {
+      const r = ReturnVector2();
       assert.isArray(r);
       assert.lengthOf(r, 3);
       assert.strictEqual(r[0].get(), 1);

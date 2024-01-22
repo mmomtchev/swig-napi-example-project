@@ -64,8 +64,15 @@ describe('WASM', () => {
       assert.strictEqual(r, 1);
     });
 
-    it('retrieve a ReturnVector', () => {
-      const r = bindings.ReturnVector();
+    it('retrieve a ReturnVector 1', () => {
+      const r = bindings.ReturnVector1();
+      assert.isArray(r);
+      assert.lengthOf(r, 3);
+      assert.strictEqual(r[0].get(), 1);
+    });
+
+    it('retrieve a ReturnVector 2', () => {
+      const r = bindings.ReturnVector2();
       assert.isArray(r);
       assert.lengthOf(r, 3);
       assert.strictEqual(r[0].get(), 1);

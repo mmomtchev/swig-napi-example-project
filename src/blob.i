@@ -5,6 +5,8 @@
 
 %include <arraybuffer.i>
 
+%apply(unsigned)                                          { size_t };
+
 // Use the standard ArrayBuffer typemaps:
 // * writable Buffer in an argument
 %apply(void *arraybuffer_data, size_t arraybuffer_len)    { (uint8_t *data, size_t len) };
