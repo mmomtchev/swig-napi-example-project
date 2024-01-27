@@ -142,6 +142,6 @@ jobs:
       run: npm run test:nodejs
 
     - name: Run the browser tests
-      uses: GabrielBB/xvfb-action@v1
+      uses: coactions/setup-xvfb@v1
       with:
         run: npm run test:browser
