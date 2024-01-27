@@ -12,10 +12,13 @@ jobs:
     - uses: mmomtchev/setup-swig@v1
       with:
         branch: jse
+        
     - name: Verify SWIG
       run: swig-jse -version
+
     - name: Run SWIG to generated the wrappers
       run: npm run swig
+
     - name: Upload SWIG-generated wrappers
       uses: actions/upload-artifact@v4
       with:
@@ -48,6 +51,7 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: swig-generated
+        path: build
         
     - name: Install dependencies
       run: npm install --ignore-scripts
@@ -78,6 +82,12 @@ jobs:
         
     - name: Verify emscripten
       run: emcc -v
+
+    - name: Download the SWIG-generated wrappers
+      uses: actions/download-artifact@v4
+      with:
+        name: swig-generated
+        path: build
 
     - name: Install dependencies
       run: npm install --ignore-scripts
