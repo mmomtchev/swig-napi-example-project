@@ -24,15 +24,12 @@ jobs:
       with:
         name: swig-generated
         path: |
-          build/example_wrap.cc
-          build/example_wrap.cjs
-          build/example.d.ts
-          build/example.mjs
+          build/*
 
   
   build-native:
     runs-on: ${{ matrix.platform }}
-    name: Build&Test native
+    name: Build native
     needs: swig
 
     strategy:
@@ -60,13 +57,17 @@ jobs:
     - name: Build the native version
       run: npx node-gyp configure build
     
-    - name: Run the Node.js tests
-      run: npm run test:nodejs
+    - name: Upload native artifact ${{ matrix.platform }}
+      uses: actions/upload-artifact@v4
+      with:
+        name: native-${{ matrix.platform }}
+        path: |
+          build/*
 
 
   build-wasm:
     runs-on: ubuntu-latest
-    name: Build&Test native
+    name: Build WASM
     needs: swig
 
     steps:
@@ -96,6 +97,50 @@ jobs:
     - name: Build the WASM version
       run: CC=emcc CXX=em++ npx node-gyp configure build --target_platform=emscripten
     
+    - name: Upload WASM artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: wasm
+        path: |
+          build/*
+
+
+  test:
+    runs-on: ${{ matrix.platform }}
+    name: Test
+    needs: [ build-wasm, build-native ]
+
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [ubuntu-latest, macos-latest, windows-latest]
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+    - name: Setup Node.js 20
+      uses: actions/setup-node@v3
+      with:
+        node-version: 20
+
+    - name: Download the native artifact ${{ matrix.platform }}
+      uses: actions/download-artifact@v4
+      with:
+        name: native-${{ matrix.platform }}
+        path: build
+
+    - name: Download the WASM artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: wasm
+        path: build
+
+    - name: Install dependencies
+      run: npm install --ignore-scripts
+    
+    - name: Run the Node.js tests
+      run: npm run test:nodejs
+
     - name: Run the browser tests
       uses: GabrielBB/xvfb-action@v1
       with:
