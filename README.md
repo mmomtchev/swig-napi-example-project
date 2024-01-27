@@ -6,7 +6,9 @@ If you want to see a real-world complex project that uses `conan` to manage its 
 
 # Try it for yourself
 
-**While the compiled native and WASM modules should work on all OS supported by `node-gyp`, generating the SWIG wrappers and building the WASM is supported only on Linux**
+**While the compiled native and WASM modules should work on all OS supported by `node-gyp`, generating the SWIG wrappers and building the WASM is supported only on Linux (although you may find that it works most of the time on other OS)**
+
+The Github Actions automated build & test CI is set up to work on all three major OS.
 
 After installing **SWIG JavaScript Evolution** which must be available in your path:
 

@@ -2,39 +2,145 @@ name: 'Test'
 on: [pull_request, push]
 
 jobs:
-  test:
+  swig:
     runs-on: ubuntu-latest
+    name: Generate the SWIG wrappers
 
     steps:
-    - uses: actions/checkout@v3
-    - uses: actions/setup-node@v3
-      with:
-        node-version: 20
+    - name: Checkout
+      uses: actions/checkout@v4
     - uses: mmomtchev/setup-swig@v1
       with:
         branch: jse
-    - uses: mymindstorm/setup-emsdk@v13
-      with:
-        version: 3.1.51
-        
+
     - name: Verify SWIG
       run: swig-jse -version
-    - name: Verify emscripten
-      run: emcc -v
 
-    - name: Run SWIG
+    - name: Run SWIG to generated the wrappers
       run: npm run swig
 
+    - name: Upload SWIG-generated wrappers
+      uses: actions/upload-artifact@v4
+      with:
+        name: swig-generated
+        path: |
+          build/*
+
+  
+  build-native:
+    runs-on: ${{ matrix.platform }}
+    name: Build native
+    needs: swig
+
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [ubuntu-latest, macos-latest, windows-latest]
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Setup Node.js 20
+      uses: actions/setup-node@v3
+      with:
+        node-version: 20
+
+    - name: Download the SWIG-generated wrappers
+      uses: actions/download-artifact@v4
+      with:
+        name: swig-generated
+        path: build
+        
     - name: Install dependencies
       run: npm install --ignore-scripts
 
     - name: Build the native version
       run: npx node-gyp configure build
+    
+    - name: Upload native artifact ${{ matrix.platform }}
+      uses: actions/upload-artifact@v4
+      with:
+        name: native-${{ matrix.platform }}
+        path: |
+          build/*
+
+
+  build-wasm:
+    runs-on: ubuntu-latest
+    name: Build WASM
+    needs: swig
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: setup Node.js 20
+      uses: actions/setup-node@v3
+      with:
+        node-version: 20
+    - name: Setup emscripten
+      uses: mymindstorm/setup-emsdk@v13
+      with:
+        version: 3.1.51
+        
+    - name: Verify emscripten
+      run: emcc -v
+
+    - name: Download the SWIG-generated wrappers
+      uses: actions/download-artifact@v4
+      with:
+        name: swig-generated
+        path: build
+
+    - name: Install dependencies
+      run: npm install --ignore-scripts
+
     - name: Build the WASM version
       run: CC=emcc CXX=em++ npx node-gyp configure build --target_platform=emscripten
     
+    - name: Upload WASM artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: wasm
+        path: |
+          build/*
+
+
+  test:
+    runs-on: ${{ matrix.platform }}
+    name: Test
+    needs: [ build-wasm, build-native ]
+
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [ubuntu-latest, macos-latest, windows-latest]
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Setup Node.js 20
+      uses: actions/setup-node@v3
+      with:
+        node-version: 20
+
+    - name: Download the native artifact ${{ matrix.platform }}
+      uses: actions/download-artifact@v4
+      with:
+        name: native-${{ matrix.platform }}
+        path: build
+
+    - name: Download the WASM artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: wasm
+        path: build
+
+    - name: Install dependencies
+      run: npm install --ignore-scripts
+    
     - name: Run the Node.js tests
       run: npm run test:nodejs
+
     - name: Run the browser tests
       uses: GabrielBB/xvfb-action@v1
       with:
