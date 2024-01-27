@@ -22,7 +22,8 @@
     "build:wasm": "CC=emcc CXX=em++ npx node-gyp configure build --target_platform=emscripten",
     "build:native": "npx node-gyp configure build",
     "build": "npm run build:native && npm run build:wasm",
-    "dev": "cd test/browser && npx webpack serve --mode=production"
+    "dev": "cd test/browser && npx webpack serve --mode=production",
+    "build:webpack": "cd test/browser && npx webpack --mode=production"
   },
   "repository": {
     "type": "git",
