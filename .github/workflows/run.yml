@@ -145,3 +145,6 @@ jobs:
       uses: coactions/setup-xvfb@v1
       with:
         run: npm run test:browser
+
+    - name: Test building the webpack project
+      run: npm run build:webpack

@@ -32,7 +32,7 @@
       '--bind',
       '-sMODULARIZE',
       '-sEXPORT_ES6=1',
-      '-sEXPORT_NAME=blob',
+      '-sEXPORT_NAME=example',
       # Pay attention to this value, if you overflow it, you will get
       # all kinds of weird errors
       '-sSTACK_SIZE=1MB',

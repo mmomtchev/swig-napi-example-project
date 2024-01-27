@@ -1,4 +1,4 @@
-import * as blob from '../build/example';
+import * as example from '../build/example';
 
-declare const bindings: Promise<typeof blob>;
+declare const bindings: Promise<typeof example>;
 export default bindings;
