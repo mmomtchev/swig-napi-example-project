@@ -12,7 +12,7 @@ jobs:
     - uses: mmomtchev/setup-swig@v1
       with:
         branch: jse
-        
+
     - name: Verify SWIG
       run: swig-jse -version
 
@@ -27,11 +27,12 @@ jobs:
           build/example_wrap.cc
           build/example_wrap.cjs
           build/example.d.ts
+          build/example.mjs
 
   
   build-native:
     runs-on: ${{ matrix.platform }}
-    name: Builld and test the native version
+    name: Build&Test native
     needs: swig
 
     strategy:
@@ -65,7 +66,7 @@ jobs:
 
   build-wasm:
     runs-on: ubuntu-latest
-    name: Builld and test the WASM version
+    name: Build&Test native
     needs: swig
 
     steps:
