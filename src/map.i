@@ -1,7 +1,3 @@
-#ifndef SWIG_JAVASCRIPT_EVOLUTION
-#error blob requires SWIG JavaScript Evolution
-#endif
-
 // This enables the special std::string conversion maps
 // Without it, SWIG will wrap the C++ std::string as a special type
 %include <std_string.i>

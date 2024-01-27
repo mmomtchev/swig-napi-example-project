@@ -1,7 +1,3 @@
-#ifndef SWIG_JAVASCRIPT_EVOLUTION
-#error blob requires SWIG JavaScript Evolution
-#endif
-
 %include <std_vector.i>
 
 %{

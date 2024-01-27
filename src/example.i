@@ -1,7 +1,7 @@
 %module example
 
 #ifndef SWIG_JAVASCRIPT_EVOLUTION
-#error blob requires SWIG JavaScript Evolution
+#error This project requires SWIG JavaScript Evolution
 #endif
 
 %include <exception.i>
