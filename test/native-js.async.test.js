@@ -1,9 +1,17 @@
-import { Blob } from '../lib/native.cjs';
+import { Blob, asyncEnabled } from '../lib/native.cjs';
 import { assert } from 'chai';
+
+const no_async = !!process.env.NO_ASYNC;
 
 describe('native', () => {
 
+  it(`async is ${no_async ? 'disabled' : 'enabled'}`, () => {
+    assert.strictEqual(asyncEnabled, !no_async);
+  });
+
   describe('async', (done) => {
+    if (no_async) return;
+
     it('write into an existing ArrayBuffer', () => {
       const blob = new Blob(10);
       const ab = new ArrayBuffer(10);

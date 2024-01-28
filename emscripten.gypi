@@ -5,7 +5,7 @@
     'clang': 1,
     'target_arch%': 'wasm32',
     'target_platform%': 'emscripten',
-    'wasm_threads%': 0,
+    'no_async%': 0,
     'product_extension%': 'mjs',
     'emscripten_pthread': [
       # Emscripten + emnapi libuv multithreading
@@ -21,8 +21,7 @@
       '-Wextra',
       '-Wno-unused-parameter',
       '-Wno-sometimes-uninitialized',
-      '-sNO_DISABLE_EXCEPTION_CATCHING',
-      '<@(emscripten_pthread)'
+      '-sNO_DISABLE_EXCEPTION_CATCHING'
     ],
     'ldflags': [
       '--js-library=<!(node -p "require(\'emnapi\').js_library")',
@@ -35,11 +34,7 @@
       '-sEXPORT_NAME=example',
       # Pay attention to this value, if you overflow it, you will get
       # all kinds of weird errors
-      '-sSTACK_SIZE=1MB',
-      '<@(emscripten_pthread)',
-      '-sDEFAULT_PTHREAD_STACK_SIZE=1MB',
-      '-sPTHREAD_POOL_SIZE=4',
-      '-Wno-pthreads-mem-growth'
+      '-sSTACK_SIZE=1MB'
     ],
     'defines': [
       '__STDC_FORMAT_MACROS',
@@ -62,9 +57,15 @@
           '-sMEMORY64=1'
         ]
       }],
-      ['wasm_threads == 1', {
-        'cflags': [ '-pthread' ],
-        'ldflags': [ '-pthread' ],
+      ['no_async == 0', {
+        'cflags': [ '-pthread', '<@(emscripten_pthread)' ],
+        'ldflags': [
+          '-pthread',
+          '<@(emscripten_pthread)',
+          '-sDEFAULT_PTHREAD_STACK_SIZE=1MB',
+          '-sPTHREAD_POOL_SIZE=4',
+          '-Wno-pthreads-mem-growth'
+        ]
       }]
     ]
   }

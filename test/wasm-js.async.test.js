@@ -5,16 +5,29 @@ import { assert } from 'chai';
 // npx run test:nodejs
 // npx run test:browser
 
+const no_async = !!(
+  (typeof process !== 'undefined' && process.env.NO_ASYNC) ||
+  (typeof __karma__ !== 'undefined' && __karma__.config.args.includes('no-async'))
+);
+
 describe('WASM', () => {
   let Blob;
+  let asyncEnabled;
   before('load WASM', (done) => {
     WASM.then((bindings) => {
       Blob = bindings.Blob;
+      asyncEnabled = bindings.asyncEnabled;
       done();
     })
   });
 
+  it(`async is ${no_async ? 'disabled' : 'enabled'}`, () => {
+    assert.strictEqual(asyncEnabled, !no_async);
+  });
+
   describe('async', (done) => {
+    if (no_async) return;
+
     it('write into an existing ArrayBuffer', () => {
       const blob = new Blob(10);
       const ab = new ArrayBuffer(10);
