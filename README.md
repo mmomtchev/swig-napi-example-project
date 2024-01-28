@@ -55,6 +55,6 @@ Alternatively, this example can be built without asynchronous wrappers in order 
 
 In this case, there are two possible strategies:
  * Accept that calling C++ functions will produce main thread latency - which works well if all your C++ methods run very fast
- * Use [`GoogleCromeLabs/comlink`](https://github.com/GoogleChromeLabs/comlink) to call them in a worker thread - which works well if all your C++ methods have very long execution times because it adds significant overhead when calling them
+ * Use [`GoogleCromeLabs/comlink`](https://github.com/GoogleChromeLabs/comlink) to call them in a worker thread - which works well if all your C++ methods have very long execution times because it adds significant overhead when calling them (*this will require a custom serializer for C++ object - I plan to make an example*)
 
 Mixing the two is possible, but C++ functions running in the main thread and C++ functions running the in `comlink` worker won't be able to share objects as they will be running in separate memory spaces.
