@@ -9,7 +9,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        no_async: ['', 'no_async']
+        no_async: ['', '-no_async']
 
     steps:
     - name: Checkout
@@ -29,21 +29,21 @@ jobs:
     - name: Upload SWIG-generated wrappers
       uses: actions/upload-artifact@v4
       with:
-        name: swig-generated-${{ matrix.no_async }}
+        name: swig-generated${{ matrix.no_async }}
         path: |
           build/*
 
   
   build-native:
     runs-on: ${{ matrix.platform }}
-    name: Build native ${{ matrix.no_async }}
+    name: Build native ${{ matrix.platform }}${{ matrix.no_async }}
     needs: swig
 
     strategy:
       fail-fast: false
       matrix:
         platform: [ubuntu-latest, macos-latest, windows-latest]
-        no_async: ['', 'no_async']
+        no_async: ['', '-no_async']
 
     steps:
     - name: Checkout
@@ -56,7 +56,7 @@ jobs:
     - name: Download the SWIG-generated wrappers
       uses: actions/download-artifact@v4
       with:
-        name: swig-generated-${{ matrix.no_async }}
+        name: swig-generated${{ matrix.no_async }}
         path: build
         
     - name: Install dependencies
@@ -70,7 +70,7 @@ jobs:
     - name: Upload native artifact ${{ matrix.platform }}
       uses: actions/upload-artifact@v4
       with:
-        name: native-${{ matrix.platform }}-${{ matrix.no_async }}
+        name: native-${{ matrix.platform }}${{ matrix.no_async }}
         path: |
           build/*
 
@@ -83,8 +83,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        platform: [ubuntu-latest, macos-latest, windows-latest]
-        no_async: ['', 'no_async']
+        no_async: ['', '-no_async']
 
     steps:
     - name: Checkout
@@ -104,7 +103,7 @@ jobs:
     - name: Download the SWIG-generated wrappers
       uses: actions/download-artifact@v4
       with:
-        name: swig-generated-${{ matrix.no_async }}
+        name: swig-generated${{ matrix.no_async }}
         path: build
 
     - name: Install dependencies
@@ -113,19 +112,19 @@ jobs:
     - name: Build the WASM version
       run: CC=emcc CXX=em++ npx node-gyp configure build --target_platform=emscripten
       env:
-        GYP_DEFINES: ${{ matrix.no_async && 'no_async' || '' }}
+        GYP_DEFINES: ${{ matrix.no_async && '-no_async' || '' }}
     
     - name: Upload WASM artifact
       uses: actions/upload-artifact@v4
       with:
-        name: wasm-${{ matrix.no_async }}
+        name: wasm${{ matrix.no_async }}
         path: |
           build/*
 
 
   test:
     runs-on: ${{ matrix.platform }}
-    name: Test ${{ matrix.no_async }}
+    name: Test ${{ matrix.platform }}${{ matrix.no_async }}
     needs: [ build-wasm, build-native ]
 
     strategy:
@@ -145,7 +144,7 @@ jobs:
     - name: Download the native artifact ${{ matrix.platform }}
       uses: actions/download-artifact@v4
       with:
-        name: native-${{ matrix.platform }}-${{ matrix.no_async }}
+        name: native-${{ matrix.platform }}${{ matrix.no_async }}
         path: build
 
     - name: Download the WASM artifact
