@@ -112,7 +112,7 @@ jobs:
     - name: Build the WASM version
       run: CC=emcc CXX=em++ npx node-gyp configure build --target_platform=emscripten
       env:
-        GYP_DEFINES: ${{ matrix.no_async && '-no_async' || '' }}
+        GYP_DEFINES: ${{ matrix.no_async && 'no_async' || '' }}
     
     - name: Upload WASM artifact
       uses: actions/upload-artifact@v4
