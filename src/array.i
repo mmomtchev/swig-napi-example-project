@@ -1,7 +1,7 @@
 %include <std_vector.i>
 
 %{
-  // This goes into the wrapper code
+  // This goes into the wrapper code (header section)
   #include "array.h"
 %}
 

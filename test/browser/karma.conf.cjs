@@ -16,7 +16,10 @@ module.exports = function (config) {
       { pattern: 'build/bundle-mocha.js', included: true },
       { pattern: 'build/*', served: true, included: false }
     ],
-    customHeaders: [
+    client: {
+      args: process.env.NO_ASYNC ? ['no-async'] : []
+    },
+    customHeaders: process.env.NO_ASYNC ? [] : [
       { name: 'Cross-Origin-Opener-Policy', value: 'same-origin' },
       { name: 'Cross-Origin-Embedder-Policy', value: 'require-corp' }
     ],

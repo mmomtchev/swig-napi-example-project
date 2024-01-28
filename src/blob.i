@@ -1,5 +1,5 @@
 %{
-  // This goes into the wrapper code
+  // This goes into the wrapper code (header section)
   #include <blob.h>
 %}
 
@@ -17,12 +17,14 @@
 // For Fill
 %apply(int)                                               { uint8_t };
 
+#ifndef NO_ASYNC
 // Prevent objects (and references) of type Blob from being reentered when using async
 %feature("async:locking", "1");
 %apply(SWIGTYPE LOCK)                                     { Blob };
 %apply(SWIGTYPE &LOCK)                                    { Blob & };
 // Create an async version of Write
 %feature("async", "Async") Blob::Write;
+#endif
 
 // Bring in all the function definitions
 %include <blob.h>

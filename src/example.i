@@ -24,3 +24,11 @@
 
 // Examples for handling objects (std::map to object)
 %include <map.i>
+
+// Allow JavaScript to check if async is enabled
+%inline { extern const bool asyncEnabled; }
+#ifdef NO_ASYNC
+%wrapper { const bool asyncEnabled = false; }
+#else
+%wrapper { const bool asyncEnabled = true; }
+#endif
