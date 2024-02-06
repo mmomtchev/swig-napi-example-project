@@ -49,7 +49,7 @@ You should be aware that publishing an `npm` module that works in every possible
 
 # WASM without COOP/COEP
 
-Currently, WASM projects that use asynchronous wrappers require that [`COOP`/`COEP`](https://web.dev/articles/coop-coep) is enabled. In this example it is enabled by the `webpack` built-in server and by the `karma` test runner. Users of your module will have to host it on web servers that support and send these headers - **it is a requirement on the web server end - ie a configuration option that must be enabled in Apache or nginx**. For example, currently Github Pages and many low-end hosting providers do not support it.
+Currently, WASM projects using asynchronous wrappers require that [`COOP`/`COEP`](https://web.dev/articles/coop-coep) is enabled. In this example, it is enabled by the `webpack` built-in server and by the `karma` test runner. Users of your module will have to host it on web servers that support and send these headers - **this is a requirement on the web server end - ie a configuration option that must be enabled in Apache or nginx**. For example, currently Github Pages and many low-end hosting providers do not support it.
 
 Alternatively, this example can be built without asynchronous wrappers in order to produce a WASM binary that does not require `COOP`/`COEP`. The only real difference is the `emscripten` build configuration which can be found in `emscripten.gypi`.
 
