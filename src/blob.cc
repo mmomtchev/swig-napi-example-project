@@ -1,6 +1,6 @@
 #include "blob.h"
-#include <string.h>
 #include <stdexcept>
+#include <string.h>
 
 Blob::Blob() : data_(nullptr), len_(0) {}
 
@@ -31,5 +31,5 @@ void Blob::Write(uint8_t *data, size_t len) {
 }
 
 Blob::~Blob() {
-  delete [] data_;
+  delete[] data_;
 }

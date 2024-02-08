@@ -1,6 +1,6 @@
 /* This is the class that will be exported to JavaScript and TypeScript */
-#include <cstdint>
 #include <cstddef>
+#include <cstdint>
 
 class Blob {
   uint8_t *data_;

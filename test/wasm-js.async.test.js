@@ -18,7 +18,7 @@ describe('WASM', () => {
       Blob = bindings.Blob;
       asyncEnabled = bindings.asyncEnabled;
       done();
-    })
+    });
   });
 
   it(`async is ${no_async ? 'disabled' : 'enabled'}`, () => {
