@@ -45,7 +45,9 @@ npm run test:browser
 
 # CJS, MJS, ES6, TypeScript...
 
-You should be aware that publishing an `npm` module that works in every possible environment - including the browser, Node.js, being `import`ed, being `require`d, being transpiled from TypeScript, being bundled by `webpack`, etc... - is a daunting task that requires very good understanding of the various module loaders. Every effort has been made for this package to be as universal as possible - including a trick with a dummy `package.json` in the `build` directory - so that it can serve as a good starting point for your own package. Also do not forget to check [`magickwand.js`](https://github.com/mmomtchev/magickwand.js) for a real-world package that works both in Node.js and in the browser.
+This project is setup to provide a modern JavaScript environment - it uses `type: module`, JavaScript files are treated as ES6 by default and the TypeScript is also transpiled to ES6. This setup is what most newly published `npm` modules use in 2024. Such package will be compatible with all modern bundlers and recent Node.js versions when using `import` declarations. It won't be compatible with being `require`d from CJS code.
+
+You can check [`magickwand.js`](https://github.com/mmomtchev/magickwand.js) for an example of a real-world SWIG-generated dual-build (WASM/native) project that is compatible with both ES6 and CJS. However you should be aware that supporting both ES6 and CJS adds substantial complexity to the packaging of a module. It is recommended that all new JavaScript and TypeScript projects use ES6 as their main targets.
 
 # WASM without COOP/COEP
 
