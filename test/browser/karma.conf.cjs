@@ -10,15 +10,13 @@ module.exports = function (config) {
       mocha: {
         reporter: 'html',
         timeout: 40000
-      }
+      },
+      args: process.env.NO_ASYNC ? ['no-async'] : []
     },
     files: [
       { pattern: 'build/bundle-mocha.js', included: true },
       { pattern: 'build/*', served: true, included: false }
     ],
-    client: {
-      args: process.env.NO_ASYNC ? ['no-async'] : []
-    },
     customHeaders: process.env.NO_ASYNC ? [] : [
       { name: 'Cross-Origin-Opener-Policy', value: 'same-origin' },
       { name: 'Cross-Origin-Embedder-Policy', value: 'require-corp' }
