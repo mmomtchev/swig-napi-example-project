@@ -1,8 +1,7 @@
 {
   "env": {
     "mocha": true,
-    "node": true,
-    "es6": true,
+    "shared-node-browser": true,
     "es2020": true
   },
   "extends": [
