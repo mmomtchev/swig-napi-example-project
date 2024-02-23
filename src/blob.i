@@ -1,6 +1,6 @@
 %{
   // This goes into the wrapper code (header section)
-  #include <blob.h>
+  #include "blob.h"
 %}
 
 %include <arraybuffer.i>

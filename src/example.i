@@ -25,6 +25,9 @@
 // Examples for handling objects (std::map to object)
 %include <map.i>
 
+// Examples for handling callbacks
+%include <callback.i>
+
 // Allow JavaScript to check if async is enabled
 %inline { extern const bool asyncEnabled; }
 #ifdef NO_ASYNC

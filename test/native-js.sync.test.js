@@ -1,4 +1,4 @@
-import { Blob, IntObject, ReadOnlyVector, ReturnVector1, ReturnVector2, PutMap, GetMap } from '../lib/native.cjs';
+import { Blob, IntObject, ReadOnlyVector, ReturnVector1, ReturnVector2, PutMap, GetMap, GiveMeFive } from '../lib/native.cjs';
 import { assert } from 'chai';
 
 describe('native', () => {
@@ -68,13 +68,36 @@ describe('native', () => {
     });
 
     it('pass an object as a map', () => {
-      PutMap({expected: 'value'});
+      PutMap({ expected: 'value' });
     });
 
     it('retrieve a map as an object', () => {
       const r = GetMap();
       assert.isObject(r);
       assert.propertyVal(r, 'returned', 'value');
+    });
+
+    describe('pass a callback to be called from C++', () => {
+      it('nominal', () => {
+        const r = GiveMeFive((pass) => {
+          assert.strictEqual(pass, 420);
+          return 'sent from JS';
+        });
+        assert.isString(r);
+        assert.strictEqual(r, 'received from JS: sent from JS');
+      });
+
+      it('exception cases', () => {
+        assert.throws(() => {
+          GiveMeFive(() => {
+            throw new Error('420 failed');
+          });
+        }, /420 failed/);
+
+        assert.throws(() => {
+          GiveMeFive(() => Infinity);
+        }, /JavaScript callback did not return a string/);
+      });
     });
   });
 
