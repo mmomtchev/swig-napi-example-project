@@ -90,12 +90,13 @@ describe('WASM', () => {
 
     describe('pass a callback to be called from C++', () => {
       it('nominal', () => {
-        const r = bindings.GiveMeFive((pass) => {
+        const r = bindings.GiveMeFive((pass, name) => {
           assert.strictEqual(pass, 420);
-          return 'sent from JS';
+          assert.isString(name);
+          return 'sent from JS ' + name;
         });
         assert.isString(r);
-        assert.strictEqual(r, 'received from JS: sent from JS');
+        assert.strictEqual(r, 'received from JS: sent from JS with cheese');
       });
 
       it('exception cases', () => {
@@ -107,7 +108,7 @@ describe('WASM', () => {
 
         assert.throws(() => {
           bindings.GiveMeFive(() => Infinity);
-        }, /JavaScript callback did not return a string/);
+        }, /callback return value of type 'std::string'/);
       });
     });
   });
