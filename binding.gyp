@@ -1,6 +1,8 @@
 {
   'variables': {
-    'target_platform%': 'default'
+    'target_platform%': 'default',
+    'enable_coverage%': 'false',
+    'enable_asan%': 'false'
   },
   'conditions': [
     ['target_platform == "emscripten"', {
@@ -20,6 +22,16 @@
       # This must always come first and cannot be conditional
       '<!@(node -p "require(\'emnapi\').include")',
       '<!@(node -p "require(\'node-addon-api\').include")',
+    ],
+    'conditions': [
+      ["enable_coverage == 'true'", {
+        "cflags_cc": [ "-fprofile-arcs", "-ftest-coverage" ],
+        "ldflags" : [ "-lgcov", "--coverage" ]
+      }],
+      ["enable_asan == 'true'", {
+        "cflags_cc": [ "-fsanitize=address" ],
+        "ldflags" : [ "-fsanitize=address" ]
+      }],
     ],
     'configurations': {
       'Debug': {
