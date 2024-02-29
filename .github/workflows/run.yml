@@ -268,7 +268,7 @@ jobs:
   asan:
     runs-on: ubuntu-latest
     name: Run asan
-    needs: build-asan
+    needs: [ build-asan, build-wasm ]
 
     steps:
     - name: Checkout
@@ -312,7 +312,7 @@ jobs:
   codecov:
     runs-on: ubuntu-latest
     name: Run code coverage
-    needs: build-codecov
+    needs: [ build-codecov, build-wasm ]
 
     steps:
     - name: Checkout
