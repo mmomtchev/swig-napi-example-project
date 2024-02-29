@@ -1,10 +1,11 @@
 {
   // This an example of a Visual Studio Code debug configuration for Linux
   // It allows to use source level debugging with breakpoints directly from the IDE
+  // It works with the Node.js native version
   //
-  // Rebuild the project with node-gyp configure build --debug
-  // And replace the path in build/example_wrap.cjs with:
-  //   var dll = require('../build/Debug/example.node');
+  // Rebuild the project with:
+  //   npm run swig:debug
+  //   node-gyp configure build --debug
   "version": "0.2.0",
   "configurations": [
     {
