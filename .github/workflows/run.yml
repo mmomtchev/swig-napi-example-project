@@ -267,7 +267,7 @@ jobs:
 
   asan:
     runs-on: ubuntu-latest
-    name: run asan
+    name: Run asan
     needs: build-asan
 
     steps:
@@ -282,6 +282,12 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: native-asan
+        path: build
+
+    - name: Download the WASM artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: wasm
         path: build
 
     - name: Install dependencies
@@ -305,7 +311,7 @@ jobs:
 
   codecov:
     runs-on: ubuntu-latest
-    name: run code coverage
+    name: Run code coverage
     needs: build-codecov
 
     steps:
@@ -320,6 +326,12 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: native-codecov
+        path: build
+
+    - name: Download the WASM artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: wasm
         path: build
 
     - name: Install dependencies
