@@ -338,7 +338,7 @@ jobs:
       run: npm install --ignore-scripts
     
     - name: Run the Node.js tests
-      run: npx c8 npm test:nodejs
+      run: npx c8 npm run test:nodejs
 
     - name: Collect code coverage
       run: |
