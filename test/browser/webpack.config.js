@@ -1,4 +1,5 @@
 import * as path from 'node:path';
+import * as process from 'node:process';
 import { fileURLToPath } from 'node:url';
 
 // This contains two different builds: the standalone webpage and the mocha bundle
