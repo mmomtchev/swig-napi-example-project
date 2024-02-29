@@ -322,16 +322,16 @@ jobs:
       with:
         node-version: 20
 
-    - name: Download the code coverage artifact
-      uses: actions/download-artifact@v4
-      with:
-        name: native-codecov
-        path: build
-
     - name: Download the WASM artifact
       uses: actions/download-artifact@v4
       with:
         name: wasm
+        path: build
+
+    - name: Download the code coverage artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: native-codecov
         path: build
 
     - name: Install dependencies
