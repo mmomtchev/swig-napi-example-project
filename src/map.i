@@ -1,5 +1,5 @@
 // This enables the special std::string conversion maps
-// Without it, SWIG will wrap the C++ std::string as a special type
+// Without it, SWIG will wrap the C++ std::string as any other type
 %include <std_string.i>
 
 %include <std_map.i>

@@ -13,6 +13,7 @@
 
 // * this one produces a returned value from the arguments
 %apply(void **arraybuffer_data, size_t *arraybuffer_len)  { (uint8_t **data, size_t *len) };
+%typemap(freearg, noblock=1) (uint8_t **data, size_t *len) "delete[] *$1;"
 
 // For Fill
 %apply(int)                                               { uint8_t };
