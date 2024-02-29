@@ -90,3 +90,5 @@ CC=emcc CXX=em++ npx node-gyp configure build --target_platform=emscripten --deb
 ```
 
 Then, it should be possible to step into the WASM code, showing the C/C++ source files instead of the WASM disassembly.
+
+Also be sure to read https://developer.chrome.com/docs/devtools/wasm/.
