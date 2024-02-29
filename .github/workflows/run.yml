@@ -299,15 +299,6 @@ jobs:
         LD_PRELOAD: /usr/lib/x86_64-linux-gnu/libasan.so.6
         LSAN_OPTIONS: suppressions=${{ github.workspace }}/test/napi-leaks-suppression.txt
 
-    - name: Collect code coverage
-      run: |
-        npm run gcov
-        npm run lcov
-    - uses: codecov/codecov-action@v3
-      with:
-        token: ${{ secrets.CODECOV_TOKEN }}
-        directory: coverage
-
 
   codecov:
     runs-on: ubuntu-latest
