@@ -1,5 +1,8 @@
 # SWIG Node-API example skeleton
 
+[![CI](https://github.com/mmomtchev/swig-napi-example-project/actions/workflows/run.yml/badge.svg)](https://github.com/mmomtchev/swig-napi-example-project/actions/workflows/run.yml)
+[![codecov](https://codecov.io/gh/mmomtchev/swig-napi-example-project/graph/badge.svg?token=05LMSUTBVA)](https://codecov.io/gh/mmomtchev/swig-napi-example-project)
+
 This is an example skeleton for a C++ project that uses SWIG Node-API with a dual-build system supporting both Node.js/native and Browser/WASM builds
 
 If you want to see a real-world complex project that uses `conan` to manage its dependencies, you should take a look at [`magickwand.js`](https://github.com/mmomtchev/magickwand.js) - the ImageMagick-7 bindings for JavaScript.
