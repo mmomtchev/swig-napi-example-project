@@ -278,16 +278,16 @@ jobs:
       with:
         node-version: 18
 
-    - name: Download the ASAN instrumented artifact
-      uses: actions/download-artifact@v4
-      with:
-        name: native-asan
-        path: build
-
     - name: Download the WASM artifact
       uses: actions/download-artifact@v4
       with:
         name: wasm
+        path: build
+
+    - name: Download the ASAN instrumented artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: native-asan
         path: build
 
     - name: Install dependencies
