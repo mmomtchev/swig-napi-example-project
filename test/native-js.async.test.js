@@ -1,4 +1,5 @@
-import { Blob, asyncEnabled, GiveMeFiveAsync } from '../lib/native.cjs';
+import { Blob, asyncEnabled } from '../lib/native.cjs';
+import * as dll from '../lib/native.cjs';
 import * as process from 'node:process';
 import { assert } from 'chai';
 
@@ -37,7 +38,7 @@ describe('native', () => {
 
     describe('pass a callback to be called from C++', () => {
       it('nominal', (done) => {
-        GiveMeFiveAsync((pass, name) => {
+        dll.GiveMeFiveAsync((pass, name) => {
           assert.strictEqual(pass, 420);
           assert.isString(name);
           return 'sent from JS ' + name;
@@ -49,13 +50,13 @@ describe('native', () => {
       });
 
       it('exception cases', (done) => {
-        GiveMeFiveAsync(() => {
+        dll.GiveMeFiveAsync(() => {
           throw new Error('420 failed');
         })
           .catch((e) => {
             assert.match(e.message, /420 failed/);
           })
-          .then(() => GiveMeFiveAsync(() => Infinity))
+          .then(() => dll.GiveMeFiveAsync(() => Infinity))
           .catch((e) => {
             assert.match(e.message, /callback return value of type 'std::string'/);
           })
