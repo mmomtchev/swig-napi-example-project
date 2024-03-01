@@ -60,7 +60,8 @@
 // called, if you plan to keep this reference in C++, you will need to remove
 // this part and implement some kind of deallocation yourself
 //
-%fragment("threads", "wrapper") %{
+#define ASYNC_CALLBACK_SUPPORT
+%fragment("threads", "header") %{
   #include <thread>
   #include <condition_variable>
   #include <exception>
@@ -88,6 +89,7 @@
   $1 = [tsfn, syncfn, main_thread_id](int passcode, const std::string &name) -> std::string {
     // Here we are called by the C++ code - we might be in a the main thread (synchronous call)
     // or a background thread (asynchronous call)
+    auto worker_thread_id = std::this_thread::get_id();
     std::string c_ret;
     std::mutex m;
     std::condition_variable cv;
@@ -95,7 +97,8 @@
     bool error = false;
 
     // This is the actual trampoline that allows call into JS
-    auto do_call = [&c_ret, &passcode, &name, &m, &cv, &ready, &error, syncfn, tsfn](Napi::Env env, Napi::Function js_fn) {
+    auto do_call = [&c_ret, &passcode, &name, &m, &cv, &ready, &error, syncfn, tsfn, main_thread_id, worker_thread_id]
+      (Napi::Env env, Napi::Function js_fn) {
       // Here we are back in the main V8 thread
 
       // Convert the C++ arguments to JS
@@ -109,6 +112,52 @@
       try {
         Napi::Value js_ret = js_fn.Call(env.Undefined(), js_args);
 
+        // You don't need this part if you are not going to support async functions
+#ifdef ASYNC_CALLBACK_SUPPORT
+        // Handle the Promise in case the function was async
+        if (js_ret.IsPromise()) {
+          if (main_thread_id == worker_thread_id) {
+            throw std::runtime_error{"Can't resolve a Promise when called synchronously"};
+          }
+          napi_value on_resolve = Napi::Function::New(env, [env, &c_ret, &m, &cv, &ready, &error]
+              (const Napi::CallbackInfo &info) {
+              // Handle the JS return value
+              try {
+                $typemap(in, std::string, input=info[0], 1=c_ret, argnum=JavaScript callback return value);
+              } catch (const std::exception &e) {
+                error = true;
+                c_ret = e.what();
+              }
+
+              // Unblock the C++ thread
+              std::unique_lock<std::mutex> lock{m};
+              ready = true;
+              lock.unlock();
+              cv.notify_one();
+            });
+          napi_value on_reject = Napi::Function::New(env, [&c_ret, &m, &cv, &ready, &error]
+              (const Napi::CallbackInfo &info) {
+              // Handle exceptions
+              error = true;
+              c_ret = info[0].ToString();
+
+              // Unblock the C++ thread
+              std::unique_lock<std::mutex> lock{m};
+              ready = true;
+              lock.unlock();
+              cv.notify_one();
+            });
+          js_ret.ToObject().Get("then").As<Napi::Function>().Call(js_ret, 1, &on_resolve);
+          js_ret.ToObject().Get("catch").As<Napi::Function>().Call(js_ret, 1, &on_reject);
+
+          // Don't do this if you plan to keep the function reference around in C++
+          tsfn->Release();
+          delete tsfn;
+          delete syncfn;
+          return;
+        }
+#endif
+
         // Handle the JS return value
         $typemap(in, std::string, input=js_ret, 1=c_ret, argnum=JavaScript callback return value);
       } catch (const std::exception &err) {
@@ -117,9 +166,8 @@
         c_ret = err.what();
       }
 
-      std::unique_lock<std::mutex> lock{m};
-
       // Unblock the C++ thread
+      std::unique_lock<std::mutex> lock{m};
       ready = true;
       lock.unlock();
       cv.notify_one();
@@ -132,7 +180,7 @@
 
     // Are we in the thread pool background thread (V8 is not accessible) or not?
     // (this is what allows this typemap to work in both sync and async mode)
-    if (std::this_thread::get_id() == main_thread_id) {
+    if (worker_thread_id == main_thread_id) {
       // Synchronous call
       do_call(syncfn->Env(), syncfn->Value());
     } else {
@@ -151,7 +199,11 @@
 #endif
 
 // This is the TypeScript type associated
+#ifdef ASYNC_CALLBACK_SUPPORT
+%typemap(ts) std::function<std::string(int, const std::string &)> giver "(pass: number, name: string) => Promise<string> | string";
+#else
 %typemap(ts) std::function<std::string(int, const std::string &)> giver "(pass: number, name: string) => string";
+#endif
 
 // Bring in all the function definitions
 %include <callback.h>

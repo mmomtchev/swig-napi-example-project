@@ -64,5 +64,35 @@ describe('native', () => {
           .catch(done);
       });
     });
+
+    describe('pass an async callback to be called from C++', () => {
+      it('nominal', (done) => {
+        dll.GiveMeFiveAsync(async (pass, name) => {
+          assert.strictEqual(pass, 420);
+          assert.isString(name);
+          await new Promise((res) => setTimeout(res, 10));
+          return 'sent from JS ' + name;
+        }).then((r) => {
+          assert.isString(r);
+          assert.strictEqual(r, 'received from JS: sent from JS with cheese');
+          done();
+        }).catch(done);
+      });
+
+      it('exception cases', (done) => {
+        dll.GiveMeFiveAsync(async () => {
+          throw new Error('420 failed');
+        })
+          .catch((e) => {
+            assert.match(e.message, /420 failed/);
+          })
+          .then(() => dll.GiveMeFiveAsync(() => Promise.resolve(Infinity)))
+          .catch((e) => {
+            assert.match(e.message, /callback return value of type 'std::string'/);
+          })
+          .then(() => done())
+          .catch(done);
+      });
+    });
   });
 });
