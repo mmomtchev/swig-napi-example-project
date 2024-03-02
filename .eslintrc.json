@@ -21,7 +21,8 @@
     "mocha"
   ],
   "globals": {
-    "__karma__": true
+    "__karma__": true,
+    "process": true
   },
   "parserOptions": {
     "ecmaVersion": 2020,

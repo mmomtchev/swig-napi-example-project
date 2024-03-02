@@ -1,4 +1,6 @@
 import { Blob, asyncEnabled } from '../lib/native.cjs';
+import * as dll from '../lib/native.cjs';
+import * as process from 'node:process';
 import { assert } from 'chai';
 
 const no_async = !!process.env.NO_ASYNC;
@@ -34,6 +36,62 @@ describe('native', () => {
       });
     });
 
-  });
+    describe('pass a callback to be called from C++', () => {
+      it('nominal', (done) => {
+        dll.GiveMeFiveAsync((pass, name) => {
+          assert.strictEqual(pass, 420);
+          assert.isString(name);
+          return 'sent from JS ' + name;
+        }).then((r) => {
+          assert.isString(r);
+          assert.strictEqual(r, 'received from JS: sent from JS with cheese');
+          done();
+        }).catch(done);
+      });
 
+      it('exception cases', (done) => {
+        dll.GiveMeFiveAsync(() => {
+          throw new Error('420 failed');
+        })
+          .catch((e) => {
+            assert.match(e.message, /420 failed/);
+          })
+          .then(() => dll.GiveMeFiveAsync(() => Infinity))
+          .catch((e) => {
+            assert.match(e.message, /callback return value of type 'std::string'/);
+          })
+          .then(() => done())
+          .catch(done);
+      });
+    });
+
+    describe('pass an async callback to be called from C++', () => {
+      it('nominal', (done) => {
+        dll.GiveMeFiveAsync(async (pass, name) => {
+          assert.strictEqual(pass, 420);
+          assert.isString(name);
+          return new Promise((res) => setTimeout(() => res('sent from JS ' + name), 10));
+        }).then((r) => {
+          assert.isString(r);
+          assert.strictEqual(r, 'received from JS: sent from JS with cheese');
+          done();
+        }).catch(done);
+      });
+
+      it('exception cases', (done) => {
+        dll.GiveMeFiveAsync(async () => {
+          return Promise.reject('420 failed');
+        })
+          .catch((e) => {
+            assert.match(e.message, /420 failed/);
+          })
+          .then(() => dll.GiveMeFiveAsync(() => Promise.resolve(Infinity)))
+          .catch((e) => {
+            assert.match(e.message, /callback return value of type 'std::string'/);
+          })
+          .then(() => done())
+          .catch(done);
+      });
+    });
+  });
 });

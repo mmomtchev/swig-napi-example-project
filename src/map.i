@@ -14,4 +14,4 @@
 %apply(std::map &OUTPUT)          { std::map &out_data };
 
 // Bring in all the function definitions
-%include<map.h>
+%include <map.h>

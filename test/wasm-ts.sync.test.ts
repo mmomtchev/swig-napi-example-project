@@ -84,6 +84,30 @@ describe('WASM', () => {
       assert.isObject(r);
       assert.propertyVal(r, 'returned', 'value');
     });
+
+    describe('pass a callback to be called from C++', () => {
+      it('nominal', () => {
+        const r = bindings.GiveMeFive((pass, name) => {
+          assert.strictEqual(pass, 420);
+          assert.isString(name);
+          return 'sent from JS ' + name;
+        });
+        assert.isString(r);
+        assert.strictEqual(r, 'received from JS: sent from JS with cheese');
+      });
+
+      it('exception cases', () => {
+        assert.throws(() => {
+          bindings.GiveMeFive(() => {
+            throw new Error('420 failed');
+          });
+        }, /420 failed/);
+
+        assert.throws(() => {
+          bindings.GiveMeFive(() => Infinity as unknown as string);
+        }, /callback return value of type 'std::string'/);
+      });
+    });
   });
 
 });

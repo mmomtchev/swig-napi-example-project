@@ -16,7 +16,8 @@
       "args": [
         "--no-warnings",
         "--loader=ts-node/esm",
-        "${workspaceRoot}/node_modules/mocha/lib/cli/cli.js"
+        "${workspaceRoot}/node_modules/mocha/lib/cli/cli.js",
+        "--timeout", "0"
       ],
       "stopAtEntry": false,
       "cwd": "${workspaceRoot}",

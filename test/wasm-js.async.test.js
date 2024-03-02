@@ -13,10 +13,12 @@ const no_async = !!(
 describe('WASM', () => {
   let Blob;
   let asyncEnabled;
+  let GiveMeFiveAsync;
   before('load WASM', (done) => {
     WASM.then((bindings) => {
       Blob = bindings.Blob;
       asyncEnabled = bindings.asyncEnabled;
+      GiveMeFiveAsync = bindings.GiveMeFiveAsync;
       done();
     });
   });
@@ -50,6 +52,63 @@ describe('WASM', () => {
       });
     });
 
-  });
+    describe('pass a callback to be called from C++', () => {
+      it('nominal', (done) => {
+        GiveMeFiveAsync((pass, name) => {
+          assert.strictEqual(pass, 420);
+          assert.isString(name);
+          return 'sent from JS ' + name;
+        }).then((r) => {
+          assert.isString(r);
+          assert.strictEqual(r, 'received from JS: sent from JS with cheese');
+          done();
+        }).catch(done);
+      });
 
+      it('exception cases', (done) => {
+        GiveMeFiveAsync(() => {
+          throw new Error('420 failed');
+        })
+          .catch((e) => {
+            assert.match(e.message, /420 failed/);
+          })
+          .then(() => GiveMeFiveAsync(() => Infinity))
+          .catch((e) => {
+            assert.match(e.message, /callback return value of type 'std::string'/);
+          })
+          .then(() => done())
+          .catch(done);
+      });
+    });
+
+    describe('pass an async callback to be called from C++', () => {
+      it('nominal', (done) => {
+        GiveMeFiveAsync(async (pass, name) => {
+          assert.strictEqual(pass, 420);
+          assert.isString(name);
+          return new Promise((res) => setTimeout(() => res('sent from JS ' + name), 10));
+        }).then((r) => {
+          assert.isString(r);
+          assert.strictEqual(r, 'received from JS: sent from JS with cheese');
+          done();
+        }).catch(done);
+      });
+
+      it('exception cases', (done) => {
+        GiveMeFiveAsync(async () => {
+          return Promise.reject('420 failed');
+        })
+          .catch((e) => {
+            assert.match(e.message, /420 failed/);
+          })
+          .then(() => GiveMeFiveAsync(() => Promise.resolve(Infinity)))
+          .catch((e) => {
+            assert.match(e.message, /callback return value of type 'std::string'/);
+          })
+          .then(() => done())
+          .catch(done);
+      });
+    });
+
+  });
 });

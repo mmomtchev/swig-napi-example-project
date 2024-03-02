@@ -57,9 +57,12 @@
         '<(module_root_dir)/src'
       ],
       'sources': [
+        # These are the examples that are wrapped
         'src/blob.cc',
         'src/array.cc',
         'src/map.cc',
+        'src/callback.cc',
+        # These are the SWIG wrappers
         'build/example_wrap.cc'
       ]
     }
