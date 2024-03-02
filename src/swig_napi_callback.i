@@ -57,11 +57,11 @@
 
     // $1 is what we pass to the C++ function -> it is a C++ wrapper
     // around the JS callback
-    return [tsfn, syncfn, main_thread_id, tmaps_in, tmap_out, call](ARGS ...args) -> RET {
+    return [tsfn, syncfn, main_thread_id, tmaps_in, tmap_out, call](ARGS &&...args) -> RET {
       // Here we are called by the C++ code - we might be in a the main thread (synchronous call)
       // or a background thread (asynchronous call)
       auto worker_thread_id = std::this_thread::get_id();
-      std::string c_ret;
+      RET c_ret;
       std::mutex m;
       std::condition_variable cv;
       bool ready = false;
