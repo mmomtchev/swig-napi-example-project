@@ -90,7 +90,7 @@
             if (main_thread_id == worker_thread_id) {
               throw std::runtime_error{"Can't resolve a Promise when called synchronously"};
             }
-            napi_value on_resolve = Napi::Function::New(env, [env, &tmap_out, &c_ret, &m, &cv, &ready, &error]
+            napi_value on_resolve = Napi::Function::New(env, [env, tmap_out, &c_ret, &m, &cv, &ready, &error]
                 (const Napi::CallbackInfo &info) {
                 // Handle the JS return value
                 try {
