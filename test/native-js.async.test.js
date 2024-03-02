@@ -70,8 +70,7 @@ describe('native', () => {
         dll.GiveMeFiveAsync(async (pass, name) => {
           assert.strictEqual(pass, 420);
           assert.isString(name);
-          await new Promise((res) => setTimeout(res, 10));
-          return 'sent from JS ' + name;
+          return new Promise((res) => setTimeout(() => res('sent from JS ' + name), 10));
         }).then((r) => {
           assert.isString(r);
           assert.strictEqual(r, 'received from JS: sent from JS with cheese');
@@ -81,7 +80,7 @@ describe('native', () => {
 
       it('exception cases', (done) => {
         dll.GiveMeFiveAsync(async () => {
-          throw new Error('420 failed');
+          return Promise.reject('420 failed');
         })
           .catch((e) => {
             assert.match(e.message, /420 failed/);
