@@ -9,11 +9,10 @@
  * When called asynchronously, they support automatically resolving Promises returned from
  * JavaScript async callbacks.
  *
- * Note that this implementation deletes the C++ reference after the function
- * called, if you plan to keep this reference in C++, you will need to remove
- * this part and implement some kind of deallocation yourself. In this case you will
- * probably want to return some kind of functor object that will contain the JS
- * references in it so that you can delete them from the C++ code.
+ * Note that this implementation returns an std::function with a captured shared_ptr
+ * that handles the release of the JS resources once the last copy of the std::function is
+ * destroyed. This means that you should take extra care when passing any shared_ptr as arguments
+ * because this can lead to a dependency cycle between shared_ptr that can never be freed.
  */
 %fragment("SWIG_NAPI_Callback", "header") %{
   #include <thread>
@@ -41,23 +40,23 @@
       std::function<Napi::Value(Napi::Env, Napi::Function, const std::vector<napi_value> &)> call
     ) {
     Napi::Env env{js_callback.Env()};
-    Napi::ThreadSafeFunction *tsfn;
-    Napi::FunctionReference *syncfn;
-
-    tsfn = new Napi::ThreadSafeFunction(Napi::ThreadSafeFunction::New(env,
+    std::shared_ptr<Napi::ThreadSafeFunction> tsfn{new Napi::ThreadSafeFunction(Napi::ThreadSafeFunction::New(env,
       js_callback.As<Napi::Function>(),
       Napi::Object::New(env),
       "SWIG_callback_task",
       0,
       1
-    ));
-    syncfn = new Napi::FunctionReference(Napi::Persistent(js_callback.As<Napi::Function>()));
+    )), [](Napi::ThreadSafeFunction *t){
+      t->Release();
+      delete t;
+    }};
+
     // Here we are in the main V8 thread
     auto main_thread_id = std::this_thread::get_id();
 
     // $1 is what we pass to the C++ function -> it is a C++ wrapper
     // around the JS callback
-    return [tsfn, syncfn, main_thread_id, tmaps_in, tmap_out, call](ARGS &&...args) -> RET {
+    return [tsfn, js_callback, main_thread_id, tmaps_in, tmap_out, call](ARGS &&...args) -> RET {
       // Here we are called by the C++ code - we might be in a the main thread (synchronous call)
       // or a background thread (asynchronous call)
       auto worker_thread_id = std::this_thread::get_id();
@@ -68,10 +67,11 @@
       bool error = false;
 
       // This is the actual trampoline that allows call into JS
-      auto do_call = [&c_ret, &m, &cv, &ready, &error, syncfn, tsfn, main_thread_id, worker_thread_id,
+      auto do_call = [&c_ret, &m, &cv, &ready, &error, tsfn, main_thread_id, worker_thread_id,
         tmaps_in, tmap_out, call, &args...]
         (Napi::Env env, Napi::Function js_fn) {
-        // Here we are back in the main V8 thread
+        // Here we are back in the main V8 thread, potentially from an async context
+        Napi::HandleScope store{env};
 
         // Convert the C++ arguments to JS
         // ($typemap with arguments is currently an undocumented
@@ -92,6 +92,7 @@
             }
             napi_value on_resolve = Napi::Function::New(env, [env, tmap_out, &c_ret, &m, &cv, &ready, &error]
                 (const Napi::CallbackInfo &info) {
+                Napi::HandleScope store{env};
                 // Handle the JS return value
                 try {
                   c_ret = tmap_out(env, info[0]);
@@ -106,8 +107,9 @@
                 lock.unlock();
                 cv.notify_one();
               });
-            napi_value on_reject = Napi::Function::New(env, [&c_ret, &m, &cv, &ready, &error]
+            napi_value on_reject = Napi::Function::New(env, [env, &c_ret, &m, &cv, &ready, &error]
                 (const Napi::CallbackInfo &info) {
+                Napi::HandleScope store{env};
                 // Handle exceptions
                 error = true;
                 c_ret = info[0].ToString();
@@ -120,11 +122,6 @@
               });
             js_ret.ToObject().Get("then").As<Napi::Function>().Call(js_ret, 1, &on_resolve);
             js_ret.ToObject().Get("catch").As<Napi::Function>().Call(js_ret, 1, &on_reject);
-
-            // Don't do this if you plan to keep the function reference around in C++
-            tsfn->Release();
-            delete tsfn;
-            delete syncfn;
             return;
           }
 #endif
@@ -142,20 +139,17 @@
         ready = true;
         lock.unlock();
         cv.notify_one();
-        
-        // Don't do this if you plan to keep the function reference around in C++
-        tsfn->Release();
-        delete tsfn;
-        delete syncfn;
       };
 
       // Are we in the thread pool background thread (V8 is not accessible) or not?
       // (this is what allows this typemap to work in both sync and async mode)
       if (worker_thread_id == main_thread_id) {
         // Synchronous call
-        do_call(syncfn->Env(), syncfn->Value());
+        // (the js_callback Local reference is still valid -> it is on the stack)
+        do_call(js_callback.Env(), js_callback.As<Napi::Function>());
       } else {
         // Asynchronous call
+        // (js_callback is now a dangling Local reference)
         tsfn->BlockingCall(do_call);
       }
 
