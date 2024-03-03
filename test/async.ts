@@ -1,21 +1,32 @@
-import { Blob, asyncEnabled } from '../lib/native.cjs';
-import * as dll from '../lib/native.cjs';
-import * as process from 'node:process';
 import { assert } from 'chai';
+import type Bindings from '..';
 
-const no_async = !!process.env.NO_ASYNC;
+// These are all the asynchronous tests
+// They are shared between the Node.js native version and the WASM version
+// (the only difference being that WASM must be loaded by resolving its Promise)
 
-describe('native', () => {
+export default function (dll: (typeof Bindings) | Promise<typeof Bindings>, no_async: boolean) {
+  let bindings: typeof Bindings;
+  if (dll instanceof Promise) {
+    before('load WASM', (done) => {
+      dll.then((loaded) => {
+        bindings = loaded;
+        done();
+      });
+    });
+  } else {
+    bindings = dll;
+  }
 
   it(`async is ${no_async ? 'disabled' : 'enabled'}`, () => {
-    assert.strictEqual(asyncEnabled, !no_async);
+    assert.strictEqual(bindings.asyncEnabled, !no_async);
   });
 
-  describe('async', (done) => {
+  describe('async', () => {
     if (no_async) return;
 
-    it('write into an existing ArrayBuffer', () => {
-      const blob = new Blob(10);
+    it('write into an existing ArrayBuffer', (done) => {
+      const blob = new bindings.Blob(10);
       const ab = new ArrayBuffer(10);
       blob.Fill(42);
       blob.WriteAsync(ab).then(() => {
@@ -26,7 +37,7 @@ describe('native', () => {
     });
 
     it('try funny things', (done) => {
-      const blob = new Blob(12);
+      const blob = new bindings.Blob(12);
       const ab = new ArrayBuffer(8);
       blob.WriteAsync(ab).then(() => {
         done('funny things');
@@ -38,7 +49,7 @@ describe('native', () => {
 
     describe('pass a callback to be called from C++', () => {
       it('nominal', (done) => {
-        dll.GiveMeFiveAsync((pass, name) => {
+        bindings.GiveMeFiveAsync((pass, name) => {
           assert.strictEqual(pass, 420);
           assert.isString(name);
           return 'sent from JS ' + name;
@@ -50,7 +61,7 @@ describe('native', () => {
       });
 
       it('C-style', (done) => {
-        dll.GiveMeFive_C_Async((pass, name) => {
+        bindings.GiveMeFive_C_Async((pass, name) => {
           assert.strictEqual(pass, 420);
           assert.isString(name);
           return 'sent from JS ' + name;
@@ -62,13 +73,13 @@ describe('native', () => {
       });
 
       it('exception cases', (done) => {
-        dll.GiveMeFiveAsync(() => {
+        bindings.GiveMeFiveAsync(() => {
           throw new Error('420 failed');
         })
           .catch((e) => {
             assert.match(e.message, /420 failed/);
           })
-          .then(() => dll.GiveMeFiveAsync(() => Infinity))
+          .then(() => bindings.GiveMeFiveAsync(() => Infinity as unknown as string))
           .catch((e) => {
             assert.match(e.message, /callback return value of type 'std::string'/);
           })
@@ -79,10 +90,10 @@ describe('native', () => {
 
     describe('pass an async callback to be called from C++', () => {
       it('nominal', (done) => {
-        dll.GiveMeFiveAsync(async (pass, name) => {
+        bindings.GiveMeFiveAsync(async (pass, name) => {
           assert.strictEqual(pass, 420);
           assert.isString(name);
-          return new Promise((res) => setTimeout(() => res('sent from JS ' + name), 10));
+          return new Promise<string>((res) => setTimeout(() => res('sent from JS ' + name), 10));
         }).then((r) => {
           assert.isString(r);
           assert.strictEqual(r, 'received from JS: sent from JS with cheese');
@@ -91,13 +102,13 @@ describe('native', () => {
       });
 
       it('exception cases', (done) => {
-        dll.GiveMeFiveAsync(async () => {
-          return Promise.reject('420 failed');
+        bindings.GiveMeFiveAsync(async () => {
+          return Promise.reject('420 failed') as Promise<string>;
         })
           .catch((e) => {
             assert.match(e.message, /420 failed/);
           })
-          .then(() => dll.GiveMeFiveAsync(() => Promise.resolve(Infinity)))
+          .then(() => bindings.GiveMeFiveAsync(() => Promise.resolve(Infinity as unknown as string)))
           .catch((e) => {
             assert.match(e.message, /callback return value of type 'std::string'/);
           })
@@ -106,4 +117,4 @@ describe('native', () => {
       });
     });
   });
-});
+}

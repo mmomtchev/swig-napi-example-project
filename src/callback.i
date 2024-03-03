@@ -45,6 +45,12 @@
 
 #else
 
+// This is how you make a macro valid for both SWIG and the compiler
+#define ASYNC_CALLBACK_SUPPORT
+%{
+#define ASYNC_CALLBACK_SUPPORT
+%}
+
 // Create async versions of GiveMeFive
 %feature("async", "Async") GiveMeFive;
 %feature("async", "_Async") GiveMeFive_C_wrapper;

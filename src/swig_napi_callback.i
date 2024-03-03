@@ -18,7 +18,6 @@
   #include <thread>
   #include <condition_variable>
   #include <exception>
-  #define ASYNC_CALLBACK_SUPPORT
 
   template <typename RET, typename ...ARGS>
   std::function<RET(ARGS...)> SWIG_NAPI_Callback(
