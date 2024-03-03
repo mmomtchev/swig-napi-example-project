@@ -49,6 +49,18 @@ describe('native', () => {
         }).catch(done);
       });
 
+      it('C-style', (done) => {
+        dll.GiveMeFive_C_Async((pass, name) => {
+          assert.strictEqual(pass, 420);
+          assert.isString(name);
+          return 'sent from JS ' + name;
+        }).then((r) => {
+          assert.isString(r);
+          assert.strictEqual(r, 'received from JS: sent from JS with extra cheese');
+          done();
+        }).catch(done);
+      });
+
       it('exception cases', (done) => {
         dll.GiveMeFiveAsync(() => {
           throw new Error('420 failed');

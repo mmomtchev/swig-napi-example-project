@@ -45,8 +45,9 @@
 
 #else
 
-// Create an async version of GiveMeFive
+// Create async versions of GiveMeFive
 %feature("async", "Async") GiveMeFive;
+%feature("async", "_Async") GiveMeFive_C_wrapper;
 
 // This is the version that supports both synchronous and asynchronous calling
 // and can resolve automatically Promises returned from JS (ie it supports JS async callbacks)
@@ -89,6 +90,26 @@
 #else
 %typemap(ts) std::function<std::string(int, const std::string &)> giver "(pass: number, name: string) => string";
 #endif
+
+// Example for wrapping a function that expects a C-style function pointer
+// It must support passing a context pointer and it will be replaced by the wrapper
+%ignore GiveMeFive_C;
+%rename(GiveMeFive_C) GiveMeFive_C_wrapper;
+// Declare the function for SWIG
+%inline {
+std::string GiveMeFive_C_wrapper(std::function<std::string(int, const std::string &)> giver);
+}
+// Embed its implementation in the generated code
+%wrapper %{
+std::string GiveMeFive_C_wrapper(std::function<std::string(int, const std::string &)> giver) {
+  return GiveMeFive_C(
+      [](void *data, int arg1, const std::string &arg2) -> std::string {
+        auto giver_ = reinterpret_cast<std::function<std::string(int, const std::string &)> *>(data);
+        return (*giver_)(arg1, arg2);
+      },
+      &giver);
+}
+%}
 
 // Bring in all the function definitions
 %include <callback.h>
