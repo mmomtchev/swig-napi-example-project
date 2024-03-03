@@ -103,6 +103,16 @@ export default function (dll: (typeof Bindings) | Promise<typeof Bindings>) {
         assert.strictEqual(r, 'received from JS: sent from JS with cheese');
       });
 
+      it('C-style', () => {
+        const r = bindings.GiveMeFive_C((pass, name) => {
+          assert.strictEqual(pass, 420);
+          assert.isString(name);
+          return 'sent from JS ' + name;
+        });
+        assert.isString(r);
+        assert.strictEqual(r, 'received from JS: sent from JS with extra cheese');
+      });
+
       it('exception cases', () => {
         assert.throws(() => {
           bindings.GiveMeFive(() => {
