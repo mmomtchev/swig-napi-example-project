@@ -84,7 +84,7 @@ export default [
    * This is the configuration you need to create unit tests
    */
   {
-    entry: './run-mocha.ts',
+    entry: process.env.NO_ASYNC ? './run-mocha-sync.ts' : './run-mocha.ts',
     output: {
       filename: 'bundle-mocha.js',
       path: path.resolve(path.dirname(fileURLToPath(import.meta.url)), 'build')
@@ -93,8 +93,11 @@ export default [
       rules: [
         {
           test: /\.ts$/,
-          use: 'ts-loader',
+          loader: 'ts-loader',
           exclude: /node_modules/,
+          options: {
+            onlyCompileBundledFiles: true
+          }
         }
       ]
     },
