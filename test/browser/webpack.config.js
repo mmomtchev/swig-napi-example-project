@@ -52,7 +52,7 @@ export default [
       // These have to be fixed in emscripten
       // https://github.com/emscripten-core/emscripten/issues/20503
       {
-        module: /example\.worker\.js$/,
+        module: /example\..*\.mjs$/,
         message: /dependency is an expression/,
       },
       {
@@ -84,26 +84,36 @@ export default [
    * This is the configuration you need to create unit tests
    */
   {
-    entry: './run-mocha.js',
+    entry: process.env.NO_ASYNC ? './run-mocha-sync.ts' : './run-mocha.ts',
     output: {
       filename: 'bundle-mocha.js',
       path: path.resolve(path.dirname(fileURLToPath(import.meta.url)), 'build')
     },
+    module: {
+      rules: [
+        {
+          test: /\.ts$/,
+          loader: 'ts-loader',
+          exclude: /node_modules/,
+          options: {
+            onlyCompileBundledFiles: true
+          }
+        }
+      ]
+    },
+    resolve: {
+      extensions: ['.ts', '.js'],
+      extensionAlias: {
+        '.js': ['.js', '.ts'],
+      }
+    },
     ignoreWarnings: [
       {
-        module: /example\.worker\.js$/,
+        module: /example\..*\.mjs$/,
         message: /dependency is an expression/,
       },
       {
         message: /Circular dependency/
-      },
-      {
-        module: /example\.worker\.js$/,
-        message: /dependencies cannot be statically extracted/
-      },
-      {
-        module: /example\.worker\.js$/,
-        message: /dependencies cannot be statically extracted/
       },
       // yes, the mocha bundle is too big for the web
       {

@@ -1,15 +1,22 @@
-import WASM from '../lib/wasm.mjs';
 import { assert } from 'chai';
+import type Bindings from '..';
 
-describe('WASM', () => {
-  let bindings: Awaited<typeof WASM>;
+// These are all the synchronous tests
+// They are shared between the Node.js native version and the WASM version
+// (the only difference being that WASM must be loaded by resolving its Promise)
 
-  before('load WASM', (done) => {
-    WASM.then((_bindings) => {
-      bindings = _bindings;
-      done();
+export default function (dll: (typeof Bindings) | Promise<typeof Bindings>) {
+  let bindings: typeof Bindings;
+  if (dll instanceof Promise) {
+    before('load WASM', (done) => {
+      dll.then((loaded) => {
+        bindings = loaded;
+        done();
+      });
     });
-  });
+  } else {
+    bindings = dll;
+  }
 
   describe('sync', () => {
     it('create a new null Blob', () => {
@@ -96,6 +103,16 @@ describe('WASM', () => {
         assert.strictEqual(r, 'received from JS: sent from JS with cheese');
       });
 
+      it('C-style', () => {
+        const r = bindings.GiveMeFive_C((pass, name) => {
+          assert.strictEqual(pass, 420);
+          assert.isString(name);
+          return 'sent from JS ' + name;
+        });
+        assert.isString(r);
+        assert.strictEqual(r, 'received from JS: sent from JS with extra cheese');
+      });
+
       it('exception cases', () => {
         assert.throws(() => {
           bindings.GiveMeFive(() => {
@@ -109,5 +126,4 @@ describe('WASM', () => {
       });
     });
   });
-
-});
+}

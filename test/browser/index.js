@@ -1,3 +1,5 @@
+// This is the index.js of the web page demo
+
 import WASM from '../../lib/wasm.mjs';
 
 console.log('Hello from WASM');
