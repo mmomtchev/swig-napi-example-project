@@ -5,29 +5,31 @@
     'enable_asan%': 'false'
   },
   'conditions': [
+    # All the magic options necessary for a WASM build
     ['target_platform == "emscripten"', {
       'includes': [
         'emscripten.gypi',
       ]
     }]
   ],
-  'includes': [
-    'swig.gypi'
-  ],
   'target_defaults': {
-    'includes': [
-      'except.gypi'
-    ],
     'include_dirs': [
       # This must always come first and cannot be conditional
-      '<!@(node -p "require(\'emnapi\').include")',
-      '<!@(node -p "require(\'node-addon-api\').include")',
+      '<!@(node -p "require(\'emnapi\').include")'
+    ],
+    'dependencies': [
+      # Very careful here - this enables compiler options that modify the ABI
+      # Especially with MSVC _everything_ you link with must be compiled with
+      # these options
+      '<!@(node -p "require(\'node-addon-api\').targets"):node_addon_api_except'
     ],
     'conditions': [
+      # code coverage build
       ["enable_coverage == 'true'", {
         "cflags_cc": [ "-fprofile-arcs", "-ftest-coverage" ],
         "ldflags" : [ "-lgcov", "--coverage" ]
       }],
+      # ASAN build
       ["enable_asan == 'true'", {
         "cflags_cc": [ "-fsanitize=address" ],
         "ldflags" : [ "-fsanitize=address" ]
@@ -46,15 +48,16 @@
       }
     }
   },
-  'includes': [
-    'swig.gypi'
-  ],
   'targets': [
     {
       # The main binary target - both native or WASM
       'target_name': 'example',
       'include_dirs': [
         '<(module_root_dir)/src'
+      ],
+      'includes': [
+        # Disables some SWIG-specific warnings
+        'swig.gypi'
       ],
       'sources': [
         # These are the examples that are wrapped
