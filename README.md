@@ -95,3 +95,11 @@ CC=emcc CXX=em++ npx node-gyp configure build --target_platform=emscripten --deb
 Then, it should be possible to step into the WASM code, showing the C/C++ source files instead of the WASM disassembly.
 
 Also be sure to read https://developer.chrome.com/docs/devtools/wasm/.
+
+# Integration with other build systems
+
+`gyp` is a notoriously opinionated build system that is very difficult to integrate. You should check [`magickwand.js`](https://github.com/mmomtchev/magickwand.js) for an example that includes integration with `conan` for the dependencies, Autotools for ImageMagick on Linux/macOS and a custom full self-contained build on Windows. All of these use expansion of dummy `gyp` variables to launch external commands.
+
+Alas, at the moment, there are no other mature options for building Node.js addons. `node-gyp` includes logic that downloads the original compilation settings for the Node.js executable on the target platform in `gyp` format and uses these to build a compatible ABI.
+
+Since all SWIG generated projects use exlusively the binary stable Node-API, building these with a different build system is easier than the general case of building any Node.js addon. I am still exploring options for a more standard build systems - probably based on `meson` or `CMake` and fully integrated with `conan` out of the box - but this is a substantial project.
