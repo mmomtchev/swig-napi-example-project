@@ -6,7 +6,7 @@
   "main": "./lib/native.cjs",
   "exports": {
     ".": {
-      "types": "./lib/index.d.cts",
+      "types": "./lib/native.d.cts",
       "require": "./lib/native.cjs"
     },
     "./wasm": {
