@@ -51,7 +51,7 @@
     "@emnapi/runtime": "^1.1.1",
     "emnapi": "^1.1.1",
     "node-addon-api": "^8.0.0",
-    "node-gyp": "^10.0.1"
+    "node-gyp": "^10.1.0"
   },
   "devDependencies": {
     "@types/chai": "^4.3.14",
