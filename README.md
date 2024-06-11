@@ -3,9 +3,14 @@
 [![CI](https://github.com/mmomtchev/swig-napi-example-project/actions/workflows/run.yml/badge.svg)](https://github.com/mmomtchev/swig-napi-example-project/actions/workflows/run.yml)
 [![codecov](https://codecov.io/gh/mmomtchev/swig-napi-example-project/graph/badge.svg?token=05LMSUTBVA)](https://codecov.io/gh/mmomtchev/swig-napi-example-project)
 
-This is an example skeleton for a C++ project that uses SWIG Node-API with a dual-build system supporting both Node.js/native and Browser/WASM builds
+This is an example skeleton for a C++ project that uses SWIG Node-API with a dual-build system supporting both Node.js/native and Browser/WASM builds using the traditional `node-gyp` build system.
 
-If you want to see a real-world complex project that uses `conan` to manage its dependencies, you should take a look at [`magickwand.js`](https://github.com/mmomtchev/magickwand.js) - the ImageMagick-7 bindings for JavaScript.
+[SWIG Node-API example skeleton using `hadron`](https://github.com/mmomtchev/hadron-swig-napi-example-project.git) contains a similar template using the new [`meson`-based `hadron`](https://github.com/mmomtchev/hadron) build system which is less mature but offers numerous advantages.
+
+If you want to see a real-world complex project that uses `conan` to manage its dependencies, you should take a look at [`magickwand.js`](https://github.com/mmomtchev/magickwand.js) - the ImageMagick-7 bindings for JavaScript:
+ * versions before 1.0 use `node-gyp` and support only Node.js native
+ * versions 1.x use `node-gyp` and `conan` and support both Node.js native and WASM, this is a very hackish build system that should be avoided
+ * versions starting from 2.0 use the new `hadron` build
 
 # Try it for yourself
 
@@ -95,11 +100,3 @@ CC=emcc CXX=em++ npx node-gyp configure build --target_platform=emscripten --deb
 Then, it should be possible to step into the WASM code, showing the C/C++ source files instead of the WASM disassembly.
 
 Also be sure to read https://developer.chrome.com/docs/devtools/wasm/.
-
-# Integration with other build systems
-
-`gyp` is a notoriously opinionated build system that is very difficult to integrate. You should check [`magickwand.js`](https://github.com/mmomtchev/magickwand.js) for an example that includes integration with `conan` for the dependencies, Autotools for ImageMagick on Linux/macOS and a custom full self-contained build on Windows. All of these use expansion of dummy `gyp` variables to launch external commands.
-
-Alas, at the moment, there are no other mature options for building Node.js addons. `node-gyp` includes logic that downloads the original compilation settings for the Node.js executable on the target platform in `gyp` format and uses these to build a compatible ABI. Because of this, it is very difficult to replace.
-
-You can check the [`meson`](https://github.com/mmomtchev/swig-napi-example-project/tree/meson) branch for a `node-gyp`-free build that is based on [`meson`](https://mesonbuild.com/), [`conan`](https://conan.io/) and [`xpack`](https://xpack.github.io/) and adds a number of features, including support for all `conan` libraries - with both the native and WASM builds - and the option of completely self-contained builds that do not require a C++ development environment on the target host - including Windows. I am planning to transform this build into a tool.
