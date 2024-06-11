@@ -12,13 +12,35 @@ If you want to see a real-world complex project that uses `conan` to manage its 
  * versions 1.x use `node-gyp` and `conan` and support both Node.js native and WASM, this is a very hackish build system that should be avoided
  * versions starting from 2.0 use the new `hadron` build
 
-# Try it for yourself
+# Try building yourself
 
-**While the compiled native and WASM modules should work on all OS supported by `node-gyp`, generating the SWIG wrappers and building the WASM is supported only on Linux (although you may find that it works most of the time on other OS)**
+## SWIG JSE
 
-The Github Actions automated build & test CI is set up to work on all three major OS.
+You must install **SWIG JavaScript Evolution** which must be available in your path.
 
-After installing **SWIG JavaScript Evolution** which must be available in your path:
+A fast and easy way to get a binary for your platform is `conan`:
+
+```shell
+conan remote add swig-jse https://swig.momtchev.com/artifactory/api/conan/swig-jse
+conan install --tool-requires swig-jse/5.0.3 --build=missing
+```
+
+If you want to use it outside of `conan`, you can find the directory where it is installed:
+
+```shell
+conan list swig-jse/5.0.3:*
+conan cache path swig-jse/5.0.3:28c51be622f275401498fce89a192712bae70ae0
+```
+
+Be aware that most of the time, SWIG is developed, tested and used on Linux.
+
+Real-world projects usually carry pregenerated SWIG wrappers and do not regenerate these at each installation.
+
+Another, riskier, option is to pull `swig-jse` on the user's machine from `conan`.
+
+There is also a Github Action: https://github.com/marketplace/actions/setup-swig
+
+## Build the project
 
 ```shell
 git clone https://github.com/mmomtchev/swig-napi-example-project.git
@@ -28,19 +50,19 @@ npm run swig
 ```
 
 Build the Node.js native addon version:
-```
+```shell
 npx node-gyp configure
 npx node-gyp build
 ```
 
 Build the browser-compatible WASM version (must have `emsdk` in your `PATH`):
-```
+```shell
 CC=emcc CXX=em++ npx node-gyp configure --target_platform=emscripten 
 CC=emcc CXX=em++ npx node-gyp build
 ```
 
 Run the unit tests:
-```
+```shell
 # Run all unit tests
 npm test
 
@@ -71,7 +93,7 @@ The Node.js native version supports full code instrumentation - debug builds, ru
 
 [launch.json](https://github.com/mmomtchev/swig-napi-example-project/blob/main/.vscode/launch.json) has an example debug configuration for Visual Studio Code on Linux. Build with:
 
-```
+```shell
 npm run swig:debug
 node-gyp configure build --debug
 ```
@@ -80,7 +102,7 @@ node-gyp configure build --debug
 
 The WASM build also supports source-level debugging, but at the moment this is supported only with the built-in debugger in Chrome. As far as I know, it is currently not possible to make webpack pack the C/C++ source files automatically, you will have to copy these to the `test/browser/build` directory. You will also have to copy `build/Debug/example.wasm.map` and to change `lib/wasm.mjs` to point to the debug build. Use the following commands to build:
 
-```
+```shell
 npm run swig:debug
 CC=emcc CXX=em++ npx node-gyp configure build --target_platform=emscripten --debug
 ```
