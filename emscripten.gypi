@@ -27,6 +27,7 @@
       '--js-library=<!(node -p "require(\'emnapi\').js_library")',
       '-sALLOW_MEMORY_GROWTH=1',
       '-sEXPORTED_FUNCTIONS=["_napi_register_wasm_v1","_malloc","_free"]',
+      '-sEXPORTED_RUNTIME_METHODS=["emnapiInit"]',
       '-sNO_DISABLE_EXCEPTION_CATCHING',
       '--bind',
       '-sMODULARIZE',

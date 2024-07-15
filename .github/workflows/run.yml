@@ -120,7 +120,7 @@ jobs:
     - name: Setup emscripten
       uses: mymindstorm/setup-emsdk@v13
       with:
-        version: 3.1.53
+        version: 3.1.63
         
     - name: Verify emscripten
       run: emcc -v
