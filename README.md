@@ -5,6 +5,8 @@
 
 This is an example skeleton for a C++ project that uses SWIG Node-API with a dual-build system supporting both Node.js/native and Browser/WASM builds using the traditional `node-gyp` build system.
 
+It includes some non-trivial examples such as C buffers, vectors of objects and maps.
+
 [SWIG Node-API example skeleton using `hadron`](https://github.com/mmomtchev/hadron-swig-napi-example-project.git) contains a similar template using the new [`meson`-based `hadron`](https://github.com/mmomtchev/hadron) build system which is less mature but offers numerous advantages.
 
 If you want to see a real-world complex project that uses `conan` to manage its dependencies, you should take a look at [`magickwand.js`](https://github.com/mmomtchev/magickwand.js) - the ImageMagick-7 bindings for JavaScript:
