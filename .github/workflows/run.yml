@@ -342,3 +342,17 @@ jobs:
         token: ${{ secrets.CODECOV_TOKEN }}
         directory: coverage
         slug: mmomtchev/swig-napi-example-project
+
+  lint:
+    runs-on: ubuntu-latest
+    name: Run the linters
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+    - name: Install the dependencies
+      run: npm install
+    - name: Run the linters
+      run: npm run lint
