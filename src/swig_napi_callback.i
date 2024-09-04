@@ -15,9 +15,10 @@
  * because this can lead to a dependency cycle between shared_ptr that can never be freed.
  */
 %fragment("SWIG_NAPI_Callback", "header") %{
-  #include <thread>
   #include <condition_variable>
   #include <exception>
+  #include <optional>
+  #include <thread>
 
   template <typename RET, typename ...ARGS>
   std::function<RET(ARGS...)> SWIG_NAPI_Callback(
@@ -26,7 +27,7 @@
       std::function<RET(Napi::Env, Napi::Value)> tmap_out
     ) {
       return SWIG_NAPI_Callback(js_callback, tmaps_in, tmap_out,
-        [](Napi::Env env, Napi::Function js_callback, std::vector<napi_value> &js_args){
+        [](Napi::Env env, Napi::Function js_callback, const std::vector<napi_value> &js_args){
           return js_callback.Call(env.Undefined(), js_args);
       });
     }
@@ -59,11 +60,11 @@
       // Here we are called by the C++ code - we might be in a the main thread (synchronous call)
       // or a background thread (asynchronous call)
       auto worker_thread_id = std::this_thread::get_id();
-      RET c_ret;
+      typename std::conditional<std::is_void_v<RET>, int, RET>::type c_ret;
       std::mutex m;
       std::condition_variable cv;
       bool ready = false;
-      bool error = false;
+      std::optional<std::string> error;
 
       // This is the actual trampoline that allows call into JS
       auto do_call = [&c_ret, &m, &cv, &ready, &error, tsfn, main_thread_id, worker_thread_id,
@@ -94,10 +95,11 @@
                 Napi::HandleScope store{env};
                 // Handle the JS return value
                 try {
-                  c_ret = tmap_out(env, info[0]);
+                  if constexpr (!std::is_void_v<RET>) {
+                    c_ret = tmap_out(env, info[0]);
+                  }
                 } catch (const std::exception &e) {
-                  error = true;
-                  c_ret = e.what();
+                  error = e.what();
                 }
 
                 // Unblock the C++ thread
@@ -110,8 +112,7 @@
                 (const Napi::CallbackInfo &info) {
                 Napi::HandleScope store{env};
                 // Handle exceptions
-                error = true;
-                c_ret = info[0].ToString();
+                error = info[0].ToString();
 
                 // Unblock the C++ thread
                 std::unique_lock<std::mutex> lock{m};
@@ -126,11 +127,12 @@
 #endif
 
           // Handle the JS return value
-          c_ret = tmap_out(env, js_ret);
+          if constexpr (!std::is_void_v<RET>) {
+            c_ret = tmap_out(env, js_ret);
+          }
         } catch (const std::exception &err) {
           // Handle exceptions
-          error = true;
-          c_ret = err.what();
+          error = err.what();
         }
 
         // Unblock the C++ thread
@@ -156,8 +158,10 @@
       std::unique_lock<std::mutex> lock{m};
       cv.wait(lock, [&ready]{ return ready; });
 
-      if (error) throw std::runtime_error{c_ret};
-      return c_ret;
+      if (error) throw std::runtime_error{*error};
+      if constexpr (!std::is_void_v<RET>) {
+        return c_ret;
+      }
     };
   }
 %}
