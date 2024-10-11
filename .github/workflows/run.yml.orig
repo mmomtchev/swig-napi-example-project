@@ -252,15 +252,10 @@ jobs:
       env:
         NO_ASYNC: ${{ matrix.no_async && '1' || '' }}
 
-    - name: Run the browser tests (macOS/Windows)
-      run: npm run test:browser
-      if: runner.os != 'Linux'
-      env:
-        NO_ASYNC: ${{ matrix.no_async && '1' || '' }}
-
-    - name: Run the browser tests (Linux)
-      run: xvfb-run npm run test:browser
-      if: runner.os == 'Linux'
+    - name: Run the browser tests
+      uses: coactions/setup-xvfb@v1
+      with:
+        run: npm run test:browser
       env:
         NO_ASYNC: ${{ matrix.no_async && '1' || '' }}
 
