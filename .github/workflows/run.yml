@@ -253,9 +253,7 @@ jobs:
         NO_ASYNC: ${{ matrix.no_async && '1' || '' }}
 
     - name: Run the browser tests
-      uses: coactions/setup-xvfb@v1
-      with:
-        run: npm run test:browser
+      run: npm run test:browser
       env:
         NO_ASYNC: ${{ matrix.no_async && '1' || '' }}
 
