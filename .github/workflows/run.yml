@@ -290,11 +290,13 @@ jobs:
 
     - name: Install dependencies
       run: npm install --ignore-scripts
+
+    - name: Get ASAN library name
+      run: echo LD_PRELOAD=$(gcc -print-file-name=libasan.so) >> $GITHUB_ENV
     
     - name: Run the Node.js tests
       run: npm run test:nodejs
       env:
-        LD_PRELOAD: /usr/lib/x86_64-linux-gnu/libasan.so.8
         LSAN_OPTIONS: suppressions=${{ github.workspace }}/test/napi-leaks-suppression.txt
 
 
