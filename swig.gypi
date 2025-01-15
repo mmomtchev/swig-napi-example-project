@@ -2,7 +2,6 @@
   'cflags_cc': [
     '-Wno-deprecated-declarations',
     '-Wno-unused-function',
-    '-std=c++11',
     '-Wno-type-limits',
     '-Wno-deprecated-copy'
   ],
