@@ -28,7 +28,7 @@
     "prepare": "node -e \"console.log('\\x1b[32m', 'Run \\\"npm run swig\\\" to generate the wrappers', '\\x1b[0m');\"",
     "install": "node -e \"console.log('\\x1b[32m', 'Run \\\"npm run build\\\", \\\"npm run build:native\\\" or \\\"npm run build:wasm\\\" to build', '\\x1b[0m');\"",
     "dev": "cd test/browser && npx webpack serve --mode=production",
-    "gcov": "mkdir -p coverage && cd coverage && gcov -o ../build/Debug/obj.target/example/build -o ../build/Debug/obj.target/example/src ../src/* ../build/*",
+    "gcov": "mkdir -p coverage && cd coverage && gcov -o ../build/Debug/obj.target/example/src ../src/*.c* && gcov -o ../build/Debug/obj.target/example/build ../build/*.c*",
     "lcov": "npx c8 report --reporter=text-lcov > coverage/tests.lcov"
   },
   "repository": {

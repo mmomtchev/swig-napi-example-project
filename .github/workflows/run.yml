@@ -296,7 +296,7 @@ jobs:
     - name: Run the Node.js tests
       run: npm run test:nodejs
       env:
-        LD_PRELOAD: /usr/lib/x86_64-linux-gnu/libasan.so.6
+        LD_PRELOAD: /usr/lib/x86_64-linux-gnu/libasan.so.8
         LSAN_OPTIONS: suppressions=${{ github.workspace }}/test/napi-leaks-suppression.txt
 
 
