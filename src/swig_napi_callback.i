@@ -101,9 +101,15 @@
                 }
 
                 // Unblock the C++ thread
-                std::unique_lock<std::mutex> lock{m};
+                // This is very tricky and it is not the officially recommended
+                // C++ locking sequence. We are running in a lambda inside the
+                // main lambda and as soon as we unblock it, it can potentially
+                // exit and start calling the destructors to the local variables
+                // on the stack this lambda references - which means that this
+                // lambda will cease to exist, leading to very hard to debug
+                // crashes. Keep the mutex until the last possible moment.
+                std::lock_guard<std::mutex> lock{m};
                 ready = true;
-                lock.unlock();
                 cv.notify_one();
               });
             napi_value on_reject = Napi::Function::New(env, [env, &c_ret, &m, &cv, &ready, &error]
@@ -114,9 +120,8 @@
                 c_ret = info[0].ToString();
 
                 // Unblock the C++ thread
-                std::unique_lock<std::mutex> lock{m};
+                std::lock_guard<std::mutex> lock{m};
                 ready = true;
-                lock.unlock();
                 cv.notify_one();
               });
             js_ret.ToObject().Get("then").As<Napi::Function>().Call(js_ret, 1, &on_resolve);
@@ -134,9 +139,8 @@
         }
 
         // Unblock the C++ thread
-        std::unique_lock<std::mutex> lock{m};
+        std::lock_guard<std::mutex> lock{m};
         ready = true;
-        lock.unlock();
         cv.notify_one();
       };
 
