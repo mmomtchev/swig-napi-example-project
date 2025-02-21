@@ -105,15 +105,28 @@
 %inline {
 std::string GiveMeFive_C_wrapper(std::function<std::string(int, const std::string &)> giver);
 }
+
 // Embed its implementation in the generated code
 %wrapper %{
 std::string GiveMeFive_C_wrapper(std::function<std::string(int, const std::string &)> giver) {
+  // In this particular example giver should be valid in the lambda
+  // But in order to support functions that keep the callback and call it
+  // later, we choose to make a copy.
+  // This also protects from unexpected return value optimizations by the
+  // compiler.
+  using cb_t = decltype(giver);
+  auto *cb = new cb_t{giver};
   return GiveMeFive_C(
       [](void *data, int arg1, const std::string &arg2) -> std::string {
-        auto giver_ = reinterpret_cast<std::function<std::string(int, const std::string &)> *>(data);
-        return (*giver_)(arg1, arg2);
+        auto giver_ = reinterpret_cast<cb_t*>(data);
+        auto result = (*giver_)(arg1, arg2);
+        // If the underlying code will continue calling this function
+        // it should not be deleted, in this case example it is used
+        // for a single call
+        delete giver_;
+        return result;
       },
-      &giver);
+      cb);
 }
 %}
 
