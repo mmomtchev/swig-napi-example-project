@@ -51,8 +51,9 @@
 #define ASYNC_CALLBACK_SUPPORT
 %}
 
-// Create async versions of GiveMeFive
+// Create async versions of GiveMeFive and JustCall
 %feature("async", "Async") GiveMeFive;
+%feature("async", "Async") JustCall;
 %feature("async", "_Async") GiveMeFive_C_wrapper;
 
 // This is the version that supports both synchronous and asynchronous calling
@@ -83,19 +84,38 @@
       $typemap(in, std::string, input=js_ret, 1=c_ret, argnum=JavaScript callback return value)
       return c_ret;
     },
-    [](Napi::Env env, Napi::Function js_callback, const std::vector<napi_value> &js_args) -> Napi::Value {
-      return js_callback.Call(env.Undefined(), js_args);
-    }
+    env.Global()
+  );
+}
+
+// Same but for void (*)()
+%typemap(in, fragment="SWIG_NAPI_Callback") std::function<void()> cb {
+  if (!$input.IsFunction()) {
+    %argument_fail(SWIG_TypeError, "$type", $symname, $argnum);
+  }
+  
+  $1 = SWIG_NAPI_Callback<void>(
+    $input,
+    // Empty input typemaps
+    std::function<void(Napi::Env, std::vector<napi_value> &)>(
+        [](Napi::Env env, std::vector<napi_value> &) -> void {}
+    ),
+    /// Empty output typemap
+    [](Napi::Env env, Napi::Value) -> void {},
+    env.Global()
   );
 }
 #endif
 
 // This is the TypeScript type associated
 #ifdef ASYNC_CALLBACK_SUPPORT
-%typemap(ts) std::function<std::string(int, const std::string &)> giver "(pass: number, name: string) => Promise<string> | string";
+%typemap(ts) std::function<std::string(int, const std::string &)> giver "(this: typeof globalThis, pass: number, name: string) => Promise<string> | string";
 #else
-%typemap(ts) std::function<std::string(int, const std::string &)> giver "(pass: number, name: string) => string";
+%typemap(ts) std::function<std::string(int, const std::string &)> giver "(this: typeof globalThis, pass: number, name: string) => string";
 #endif
+
+// The void special case
+%typemap(ts) std::function<void()> cb "(this: typeof globalThis) => void";
 
 // Example for wrapping a function that expects a C-style function pointer
 // It must support passing a context pointer and it will be replaced by the wrapper

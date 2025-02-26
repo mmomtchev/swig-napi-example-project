@@ -49,9 +49,10 @@ export default function (dll: (typeof Bindings) | Promise<typeof Bindings>, no_a
 
     describe('pass a callback to be called from C++', () => {
       it('nominal', (done) => {
-        bindings.GiveMeFiveAsync((pass, name) => {
+        bindings.GiveMeFiveAsync(function(pass, name) {
           assert.strictEqual(pass, 420);
           assert.isString(name);
+          assert.strictEqual(this, globalThis);
           return 'sent from JS ' + name;
         }).then((r) => {
           assert.isString(r);
@@ -68,6 +69,17 @@ export default function (dll: (typeof Bindings) | Promise<typeof Bindings>, no_a
         }).then((r) => {
           assert.isString(r);
           assert.strictEqual(r, 'received from JS: sent from JS with extra cheese');
+          done();
+        }).catch(done);
+      });
+
+      it('void () special case', (done) => {
+        let didCall = false;
+        bindings.JustCallAsync(function() {
+          assert.strictEqual(this, globalThis);
+          didCall = true;
+        }).then(() => {
+          assert.strictEqual(didCall, true);
           done();
         }).catch(done);
       });
