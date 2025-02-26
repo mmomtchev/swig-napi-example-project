@@ -9,10 +9,12 @@ module.exports = function (config) {
     client: {
       mocha: {
         reporter: 'html',
+        repeats: 1000,
         timeout: 40000
       },
       args: process.env.NO_ASYNC ? ['no-async'] : []
     },
+    browserNoActivityTimeout: 60000,
     files: [
       { pattern: 'build/bundle-mocha.js', included: true },
       { pattern: 'build/*', served: true, included: false }
