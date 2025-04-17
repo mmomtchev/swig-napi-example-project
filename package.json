@@ -51,7 +51,7 @@
     "@emnapi/runtime": "=1.4.3",
     "emnapi": "=1.4.3",
     "node-addon-api": "^8.3.1",
-    "node-gyp": "^11.1.0"
+    "node-gyp": "^11.2.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.1",
