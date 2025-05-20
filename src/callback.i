@@ -12,56 +12,17 @@
 
 // ==========================================================
 // This typemap converts a JS callback to a C++ std::function
+// using the built-in helper SWIG_NAPI_Callback
 // ==========================================================
 
-#ifdef NO_ASYNC
-// This is the synchronous version, it creates a Local function reference (js_callback)
-// that exists for the duration of the call
-%typemap(in) std::function<std::string(int, const std::string &)> giver (Napi::Function js_callback) {
-  if (!$input.IsFunction()) {
-    %argument_fail(SWIG_TypeError, "$type", $symname, $argnum);
-  }
-  js_callback = $input.As<Napi::Function>();
-
-  // $1 is what we pass to the C++ function -> it is a C++ wrapper
-  // around the JS callback
-  $1 = [&js_callback, &env](int passcode, const std::string &name) -> std::string {
-    // Convert the C++ arguments to JS
-    // ($typemap with arguments is currently an undocumented
-    // but very useful SWIG feature that is not specific to SWIG JSE)
-    std::vector<napi_value> js_args = {napi_value{}, napi_value{}};
-    $typemap(out, int, 1=passcode, result=js_args.at(0), argnum=callback argument 1);
-    $typemap(out, std::string, 1=name, result=js_args.at(1), argnum=callback argument 2);
-
-    // Call the JS callback
-    Napi::Value js_ret = js_callback.Call(env.Undefined(), js_args);
-
-    // Handle the JS return value
-    std::string c_ret;
-    $typemap(in, std::string, input=js_ret, 1=c_ret, argnum=JavaScript callback return value)
-    return c_ret;
-  };
-}
-
-#else
-
-// This is how you make a macro valid for both SWIG and the compiler
-#define ASYNC_CALLBACK_SUPPORT
-%{
-#define ASYNC_CALLBACK_SUPPORT
-%}
-
+#ifndef NO_ASYNC
 // Create async versions of GiveMeFive and JustCall
 %feature("async", "Async") GiveMeFive;
 %feature("async", "Async") JustCall;
 %feature("async", "_Async") GiveMeFive_C_wrapper;
+#endif
 
-// This is the version that supports both synchronous and asynchronous calling
-// and can resolve automatically Promises returned from JS (ie it supports JS async callbacks)
-// It uses the rather complex SWIG_NAPI_Callback code fragment that is candidate for inclusion
-// in the SWIG JSE standard library
-%include <swig_napi_callback.i>
-%typemap(in, fragment="SWIG_NAPI_Callback") std::function<std::string(int, const std::string &)> giver {
+%typemap(in) std::function<std::string(int, const std::string &)> giver {
   if (!$input.IsFunction()) {
     %argument_fail(SWIG_TypeError, "$type", $symname, $argnum);
   }
@@ -89,7 +50,7 @@
 }
 
 // Same but for void (*)()
-%typemap(in, fragment="SWIG_NAPI_Callback") std::function<void()> cb {
+%typemap(in) std::function<void()> cb {
   if (!$input.IsFunction()) {
     %argument_fail(SWIG_TypeError, "$type", $symname, $argnum);
   }
@@ -105,17 +66,15 @@
     env.Global()
   );
 }
-#endif
 
 // This is the TypeScript type associated
-#ifdef ASYNC_CALLBACK_SUPPORT
-%typemap(ts) std::function<std::string(int, const std::string &)> giver "(this: typeof globalThis, pass: number, name: string) => Promise<string> | string";
-#else
+#ifdef NO_ASYNC
 %typemap(ts) std::function<std::string(int, const std::string &)> giver "(this: typeof globalThis, pass: number, name: string) => string";
-#endif
-
-// The void special case
 %typemap(ts) std::function<void()> cb "(this: typeof globalThis) => void";
+#else
+%typemap(ts) std::function<std::string(int, const std::string &)> giver "(this: typeof globalThis, pass: number, name: string) => Promise<string> | string";
+%typemap(ts) std::function<void()> cb "(this: typeof globalThis) => Promise<void> | void";
+#endif
 
 // Example for wrapping a function that expects a C-style function pointer
 // It must support passing a context pointer and it will be replaced by the wrapper

@@ -16,6 +16,16 @@
   'target_defaults': {
     'type': 'executable',
     'product_extension': '<(product_extension)',
+    'include_dirs+': [
+      'garga',
+      '<!@(node -p "require(\'emnapi\').include")'
+    ],
+    # This ugly hack allows to drop the built-in Node.js
+    # include_dirs when using emnapi since gyp
+    # does not allow to conditionally prepend include_dirs
+    'include_dirs/': [
+      ['exclude', '<(node_root_dir)'],
+    ],
     'cflags': [
       '-Wall',
       '-Wextra',
