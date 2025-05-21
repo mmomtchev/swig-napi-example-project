@@ -17,7 +17,6 @@
     'type': 'executable',
     'product_extension': '<(product_extension)',
     'include_dirs+': [
-      'garga',
       '<!@(node -p "require(\'emnapi\').include")'
     ],
     # This ugly hack allows to drop the built-in Node.js
