@@ -8,6 +8,7 @@
   'xcode_settings': {
     'OTHER_CFLAGS': [
       '-Wno-sometimes-uninitialized',
+      '-Wno-unused-function'
     ]
   },
   'msvs_settings': {
