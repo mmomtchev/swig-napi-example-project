@@ -9,6 +9,7 @@ public:
   // are default-constructible and copyable
   IntObject() = default;
   IntObject(const IntObject &) = default;
+  IntObject &operator=(const IntObject &) = default;
   IntObject(int value);
   int get() const;
 };
