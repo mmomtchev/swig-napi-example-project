@@ -13,10 +13,6 @@
     }]
   ],
   'target_defaults': {
-    'include_dirs': [
-      # This must always come first and cannot be conditional
-      '<!@(node -p "require(\'emnapi\').include")'
-    ],
     'dependencies': [
       # Very careful here - this enables compiler options that modify the ABI
       # Especially with MSVC _everything_ you link with must be compiled with
