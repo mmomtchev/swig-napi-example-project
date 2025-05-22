@@ -11,6 +11,8 @@
 // and return values
 %apply(std::vector RETURN)            { std::vector ReturnVector1 };
 
+// ignore operator=
+%ignore operator=;
 
 // Bring in all the function definitions
 %include <array.h>
