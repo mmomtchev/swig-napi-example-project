@@ -71,7 +71,7 @@
     "karma-mocha": "^2.0.1",
     "karma-verbose-reporter": "^0.0.8",
     "mocha": "github:mmomtchev/mocha#mmom",
-    "ts-loader": "^9.5.2",
+    "ts-loader": "^9.5.4",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.2",
     "webpack": "^5.101.3",
