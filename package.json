@@ -48,8 +48,8 @@
   },
   "homepage": "https://github.com/mmomtchev/swig-napi-example-project#readme",
   "dependencies": {
-    "@emnapi/runtime": "=1.4.5",
-    "emnapi": "=1.4.5",
+    "@emnapi/runtime": "=1.5.0",
+    "emnapi": "=1.5.0",
     "node-addon-api": "^8.5.0",
     "node-gyp": "^11.4.2"
   },
