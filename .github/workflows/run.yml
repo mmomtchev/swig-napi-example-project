@@ -77,7 +77,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v5
     - name: Setup Node.js 20
-      uses: actions/setup-node@v5
+      uses: actions/setup-node@v6
       with:
         node-version: 20
 
@@ -117,7 +117,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v5
     - name: setup Node.js 20
-      uses: actions/setup-node@v5
+      uses: actions/setup-node@v6
       with:
         node-version: 20
     - name: Setup emscripten
@@ -159,7 +159,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v5
     - name: Setup Node.js 20
-      uses: actions/setup-node@v5
+      uses: actions/setup-node@v6
       with:
         node-version: 20
 
@@ -192,7 +192,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v5
     - name: Setup Node.js 20
-      uses: actions/setup-node@v5
+      uses: actions/setup-node@v6
       with:
         node-version: 20
 
@@ -231,7 +231,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v5
     - name: Setup Node.js 20
-      uses: actions/setup-node@v5
+      uses: actions/setup-node@v6
       with:
         node-version: 20
 
@@ -275,7 +275,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v5
     - name: Setup Node.js 18
-      uses: actions/setup-node@v5
+      uses: actions/setup-node@v6
       with:
         node-version: 18
 
@@ -312,7 +312,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v5
     - name: Setup Node.js 20
-      uses: actions/setup-node@v5
+      uses: actions/setup-node@v6
       with:
         node-version: 20
 
@@ -354,7 +354,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v5
     - name: Setup Node.js
-      uses: actions/setup-node@v5
+      uses: actions/setup-node@v6
     - name: Install the dependencies
       run: npm install
     - name: Run the linters
