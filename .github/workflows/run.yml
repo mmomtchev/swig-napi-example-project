@@ -82,7 +82,7 @@ jobs:
         node-version: 20
 
     - name: Download the SWIG-generated wrappers
-      uses: actions/download-artifact@v5
+      uses: actions/download-artifact@v6
       with:
         name: swig-generated${{ matrix.no_async }}
         path: build
@@ -129,7 +129,7 @@ jobs:
       run: emcc -v
 
     - name: Download the SWIG-generated wrappers
-      uses: actions/download-artifact@v5
+      uses: actions/download-artifact@v6
       with:
         name: swig-generated${{ matrix.no_async }}
         path: build
@@ -164,7 +164,7 @@ jobs:
         node-version: 20
 
     - name: Download the SWIG-generated wrappers (instrumented)
-      uses: actions/download-artifact@v5
+      uses: actions/download-artifact@v6
       with:
         name: swig-generated-debug
         path: build
@@ -197,7 +197,7 @@ jobs:
         node-version: 20
 
     - name: Download the SWIG-generated wrappers (instrumented)
-      uses: actions/download-artifact@v5
+      uses: actions/download-artifact@v6
       with:
         name: swig-generated-debug
         path: build
@@ -236,13 +236,13 @@ jobs:
         node-version: 20
 
     - name: Download the native artifact ${{ matrix.platform }}
-      uses: actions/download-artifact@v5
+      uses: actions/download-artifact@v6
       with:
         name: native-${{ matrix.platform }}${{ matrix.no_async }}
         path: build
 
     - name: Download the WASM artifact
-      uses: actions/download-artifact@v5
+      uses: actions/download-artifact@v6
       with:
         name: wasm${{ matrix.no_async }}
         path: build
@@ -280,13 +280,13 @@ jobs:
         node-version: 18
 
     - name: Download the WASM artifact
-      uses: actions/download-artifact@v5
+      uses: actions/download-artifact@v6
       with:
         name: wasm
         path: build
 
     - name: Download the ASAN instrumented artifact
-      uses: actions/download-artifact@v5
+      uses: actions/download-artifact@v6
       with:
         name: native-asan
         path: build
@@ -317,13 +317,13 @@ jobs:
         node-version: 20
 
     - name: Download the WASM artifact
-      uses: actions/download-artifact@v5
+      uses: actions/download-artifact@v6
       with:
         name: wasm
         path: build
 
     - name: Download the code coverage artifact
-      uses: actions/download-artifact@v5
+      uses: actions/download-artifact@v6
       with:
         name: native-codecov
         path: build
