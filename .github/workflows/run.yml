@@ -76,10 +76,10 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v5
-    - name: Setup Node.js 20
+    - name: Setup Node.js 24
       uses: actions/setup-node@v6
       with:
-        node-version: 20
+        node-version: 24
 
     - name: Download the SWIG-generated wrappers
       uses: actions/download-artifact@v6
@@ -116,10 +116,10 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v5
-    - name: setup Node.js 20
+    - name: setup Node.js 24
       uses: actions/setup-node@v6
       with:
-        node-version: 20
+        node-version: 24
     - name: Setup emscripten
       uses: mymindstorm/setup-emsdk@v14
       with:
@@ -158,10 +158,10 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v5
-    - name: Setup Node.js 20
+    - name: Setup Node.js 24
       uses: actions/setup-node@v6
       with:
-        node-version: 20
+        node-version: 24
 
     - name: Download the SWIG-generated wrappers (instrumented)
       uses: actions/download-artifact@v6
@@ -191,10 +191,10 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v5
-    - name: Setup Node.js 20
+    - name: Setup Node.js 24
       uses: actions/setup-node@v6
       with:
-        node-version: 20
+        node-version: 24
 
     - name: Download the SWIG-generated wrappers (instrumented)
       uses: actions/download-artifact@v6
@@ -230,10 +230,10 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v5
-    - name: Setup Node.js 20
+    - name: Setup Node.js 24
       uses: actions/setup-node@v6
       with:
-        node-version: 20
+        node-version: 24
 
     - name: Download the native artifact ${{ matrix.platform }}
       uses: actions/download-artifact@v6
@@ -274,10 +274,10 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v5
-    - name: Setup Node.js 18
+    - name: Setup Node.js 24
       uses: actions/setup-node@v6
       with:
-        node-version: 18
+        node-version: 24
 
     - name: Download the WASM artifact
       uses: actions/download-artifact@v6
@@ -311,10 +311,10 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v5
-    - name: Setup Node.js 20
+    - name: Setup Node.js 24
       uses: actions/setup-node@v6
       with:
-        node-version: 20
+        node-version: 24
 
     - name: Download the WASM artifact
       uses: actions/download-artifact@v6
