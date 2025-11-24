@@ -13,7 +13,7 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
     - uses: mmomtchev/setup-swig@main
       with:
         branch: jse
@@ -42,7 +42,7 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
     - uses: mmomtchev/setup-swig@main
       with:
         branch: jse
@@ -75,7 +75,7 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
     - name: Setup Node.js 24
       uses: actions/setup-node@v6
       with:
@@ -115,7 +115,7 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
     - name: setup Node.js 24
       uses: actions/setup-node@v6
       with:
@@ -157,7 +157,7 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
     - name: Setup Node.js 24
       uses: actions/setup-node@v6
       with:
@@ -190,7 +190,7 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
     - name: Setup Node.js 24
       uses: actions/setup-node@v6
       with:
@@ -229,7 +229,7 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
     - name: Setup Node.js 24
       uses: actions/setup-node@v6
       with:
@@ -273,7 +273,7 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
     - name: Setup Node.js 24
       uses: actions/setup-node@v6
       with:
@@ -310,7 +310,7 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
     - name: Setup Node.js 24
       uses: actions/setup-node@v6
       with:
@@ -352,7 +352,7 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
     - name: Setup Node.js
       uses: actions/setup-node@v6
     - name: Install the dependencies
