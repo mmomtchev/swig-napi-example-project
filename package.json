@@ -15,8 +15,8 @@
     }
   },
   "scripts": {
-    "swig": "mkdir -p build && swig-jse -javascript -napi -typescript -c++ -outdir build -exports '../build/Release/example.node' -o build/example_wrap.cc src/example.i",
-    "swig:debug": "mkdir -p build && swig-jse -javascript -napi -typescript -c++ -outdir build -exports '../build/Debug/example.node' -o build/example_wrap.cc src/example.i",
+    "swig": "mkdir -p build && swig-jse -javascript -napi -typescript -c++ -outdir build -exports ../build/Release/example.node -o build/example_wrap.cc src/example.i",
+    "swig:debug": "mkdir -p build && swig-jse -javascript -napi -typescript -c++ -outdir build -exports ../build/Debug/example.node -o build/example_wrap.cc src/example.i",
     "test": "npm run test:nodejs && npm run test:browser",
     "test:nodejs": "npx mocha",
     "test:browser": "cd test/browser && npx webpack --mode=production && npx karma start ./karma.conf.cjs",
