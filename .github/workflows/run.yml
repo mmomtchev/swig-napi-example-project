@@ -29,7 +29,7 @@ jobs:
         SWIG_FEATURES: ${{ matrix.no_async && '-DNO_ASYNC' || '' }}
 
     - name: Upload SWIG-generated wrappers
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v6
       with:
         name: swig-generated${{ matrix.no_async }}
         path: |
@@ -55,7 +55,7 @@ jobs:
       run: npm run swig:debug
 
     - name: Upload SWIG-generated wrappers
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v6
       with:
         name: swig-generated-debug
         path: |
@@ -96,7 +96,7 @@ jobs:
         GYP_DEFINES: ${{ matrix.no_async && 'no_async' || '' }}
     
     - name: Upload native artifact ${{ matrix.platform }}
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v6
       with:
         name: native-${{ matrix.platform }}${{ matrix.no_async }}
         path: |
@@ -143,7 +143,7 @@ jobs:
         GYP_DEFINES: ${{ matrix.no_async && 'no_async' || '' }}
     
     - name: Upload WASM artifact
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v6
       with:
         name: wasm${{ matrix.no_async }}
         path: |
@@ -176,7 +176,7 @@ jobs:
       run: npx node-gyp configure build --debug --enable_asan
     
     - name: Upload native artifact (ASAN instrumented)
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v6
       with:
         name: native-asan
         path: |
@@ -209,7 +209,7 @@ jobs:
       run: npx node-gyp configure build --debug --enable_coverage
     
     - name: Upload native artifact (code coverage instrumented)
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v6
       with:
         name: native-codecov
         path: |
