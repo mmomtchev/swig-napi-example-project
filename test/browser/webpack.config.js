@@ -43,9 +43,13 @@ export default [
      */
     externals: {
       'fs': 'fs',
+      'node:fs': 'fs',
       'worker_threads': 'worker_threads',
+      'node:worker_threads': 'worker_threads',
       'module': 'module',
+      'node:module': 'module',
       'vm': 'vm',
+      'node:vm': 'vm',
       './': '"./"'
     },
     ignoreWarnings: [
@@ -125,9 +129,13 @@ export default [
     ],
     externals: {
       'fs': 'fs',
+      'node:fs': 'fs',
       'worker_threads': 'worker_threads',
+      'node:worker_threads': 'worker_threads',
       'module': 'module',
+      'node:module': 'module',
       'vm': 'vm',
+      'node:vm': 'vm',
       './': '"./"'
     }
   }
