@@ -29,7 +29,7 @@ export default [
      * to not expand those statements - we know that these sections won't be executed in
      * the browser since they are dependant on the environment auto-detection.
      * 
-     * The list is current for emscripten 3.1.51. Later versions may additional
+     * The list is current for emscripten 5.0.2. Later versions may additional
      * symbols.
      * 
      * Alternatively, if you want to publish a WASM that works without any custom
@@ -43,9 +43,13 @@ export default [
      */
     externals: {
       'fs': 'fs',
+      'node:fs': 'fs',
       'worker_threads': 'worker_threads',
+      'node:worker_threads': 'worker_threads',
       'module': 'module',
+      'node:module': 'module',
       'vm': 'vm',
+      'node:vm': 'vm',
       './': '"./"'
     },
     ignoreWarnings: [
@@ -125,9 +129,13 @@ export default [
     ],
     externals: {
       'fs': 'fs',
+      'node:fs': 'fs',
       'worker_threads': 'worker_threads',
+      'node:worker_threads': 'worker_threads',
       'module': 'module',
+      'node:module': 'module',
       'vm': 'vm',
+      'node:vm': 'vm',
       './': '"./"'
     }
   }
