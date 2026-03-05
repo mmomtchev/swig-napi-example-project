@@ -8,17 +8,13 @@ updates:
       default-days: 15
     open-pull-requests-limit: 1
     groups:
-      eslint:
+      eslint_typescript:
         patterns:
         - "*eslint*"
-        exclude-patterns:
         - "*typescript*"
       emnapi:
         patterns:
         - "*emnapi*"
-      typescript:
-        patterns:
-        - "*typescript*"
 
   - package-ecosystem: "github-actions"
     directory: "/"
