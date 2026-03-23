@@ -48,22 +48,22 @@
   },
   "homepage": "https://github.com/mmomtchev/swig-napi-example-project#readme",
   "dependencies": {
-    "@emnapi/runtime": "=1.8.1",
-    "emnapi": "=1.8.1",
+    "@emnapi/runtime": "=1.9.1",
+    "emnapi": "=1.9.1",
     "node-addon-api": "^8.6.0",
     "node-gyp": "^12.2.0"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3.3.4",
+    "@eslint/eslintrc": "^3.3.5",
     "@eslint/js": "^10.0.1",
     "@types/chai": "^5.2.3",
     "@types/mocha": "^10.0.10",
-    "@types/node": "^25.3.3",
-    "@typescript-eslint/eslint-plugin": "^8.56.1",
+    "@types/node": "^25.5.0",
+    "@typescript-eslint/eslint-plugin": "^8.57.2",
     "@typescript-eslint/parser": "^8.32.1",
     "c8": "^11.0.0",
     "chai": "^6.2.2",
-    "eslint": "^10.0.2",
+    "eslint": "^10.1.0",
     "eslint-plugin-mocha": "^11.2.0",
     "globals": "^17.4.0",
     "karma": "^6.4.4",
@@ -73,9 +73,9 @@
     "mocha": "github:mmomtchev/mocha#mmom",
     "ts-loader": "^9.5.4",
     "ts-node": "^10.9.2",
-    "typescript": "^5.9.3",
+    "typescript": "^6.0.2",
     "webpack": "^5.105.4",
-    "webpack-cli": "^6.0.1",
+    "webpack-cli": "^7.0.2",
     "webpack-dev-server": "^5.2.3"
   }
 }
