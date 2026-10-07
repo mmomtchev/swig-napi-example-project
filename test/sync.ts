@@ -1,5 +1,5 @@
 import { assert } from 'chai';
-import type Bindings from '..';
+import type Bindings from 'swig-napi-example-project';
 
 // These are all the synchronous tests
 // They are shared between the Node.js native version and the WASM version

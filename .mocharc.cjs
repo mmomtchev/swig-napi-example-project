@@ -12,8 +12,7 @@ module.exports = {
   // Alas, using very large values will exhaust the JS heap, I haven't
   // investigated if it is possible to fix it.
   'repeats': 1000,
-  'node-option': [
-    'no-warnings',
-    'loader=ts-node/esm'
+  require: [
+    'tsx'
   ]
 };
